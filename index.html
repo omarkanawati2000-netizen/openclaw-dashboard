@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-panel: #1a1a1a;
+            --bg-hover: #252525;
+            --orange: #ff8c00;
+            --orange-dim: #cc7000;
+            --text-primary: #e8e8e8;
+            --text-secondary: #999;
+            --text-dim: #666;
+            --success: #00ff88;
+            --error: #ff4444;
+            --warning: #ffaa00;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Header */
+        header {
+            background: var(--bg-panel);
+            border-bottom: 2px solid var(--orange);
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .last-update {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Quick Actions Bar */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--bg-panel);
+            border: 1px solid var(--orange-dim);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--orange-dim);
+            border-color: var(--orange);
+        }
+
+        .btn.primary {
+            background: var(--orange);
+            border-color: var(--orange);
+        }
+
+        .btn.primary:hover {
+            background: var(--orange-dim);
+        }
+
+        .btn.danger {
+            border-color: var(--error);
+        }
+
+        .btn.danger:hover {
+            background: var(--error);
+            border-color: var(--error);
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--orange);
+        }
+
+        .panel-badge {
+            background: var(--orange-dim);
+            color: var(--bg-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Bot Status */
+        .bot-item {
+            background: var(--bg-dark);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .bot-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .bot-item.running {
+            border-left-color: var(--success);
+        }
+
+        .bot-item.idle {
+            border-left-color: var(--text-dim);
+        }
+
+        .bot-item.error {
+            border-left-color: var(--error);
+        }
+
+        .bot-info {
+            flex: 1;
+        }
+
+        .bot-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .bot-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .bot-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+
+        .status-running {
+            background: var(--success);
+            color: var(--bg-dark);
+        }
+
+        .status-idle {
+            background: var(--text-dim);
+            color: var(--bg-dark);
+        }
+
+        .status-error {
+            background: var(--error);
+            color: white;
+        }
+
+        /* Trading Dashboard */
+        .position-item {
+            background: var(--bg-dark);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .position-coin {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .position-long {
+            color: var(--success);
+        }
+
+        .position-short {
+            color: var(--error);
+        }
+
+        .stat-box {
+            background: var(--bg-dark);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stat-positive {
+            color: var(--success);
+        }
+
+        .stat-negative {
+            color: var(--error);
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 200px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Content Engine */
+        .channel-stats {
+            background: var(--bg-dark);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .channel-name {
+            font-weight: 600;
+            color: var(--orange);
+            margin-bottom: 0.75rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stat-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Revenue Tracker */
+        .revenue-stream {
+            background: var(--bg-dark);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+        }
+
+        .stream-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stream-amount {
+            font-size: 1.3rem;
+            color: var(--success);
+            margin-bottom: 0.25rem;
+        }
+
+        .progress-bar {
+            background: #333;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            background: var(--orange);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        /* System Health */
+        .health-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .health-item:last-child {
+            border-bottom: none;
+        }
+
+        .health-label {
+            color: var(--text-secondary);
+        }
+
+        .health-value {
+            font-weight: 600;
+        }
+
+        .error-log {
+            background: var(--bg-dark);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            border-left: 3px solid var(--error);
+            font-size: 0.85rem;
+        }
+
+        .error-time {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+        }
+
+        .error-source {
+            color: var(--warning);
+            margin: 0.25rem 0;
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .position-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--orange-dim);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🧠 OpenClaw Dashboard</h1>
+        <div class="subtitle">Automation Infrastructure Control Center</div>
+        <div class="last-update" id="lastUpdate">Last update: <span class="loading"></span></div>
+    </header>
+
+    <div class="container">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="btn primary" onclick="refreshDashboard()">🔄 Refresh All Data</button>
+            <button class="btn" onclick="window.open('https://omarkanawati2000-netizen.github.io/omars-terminal/', '_blank')">📈 Trading Terminal</button>
+            <button class="btn" onclick="alert('Logs viewer coming soon')">📋 View Logs</button>
+            <button class="btn danger" onclick="emergencyStop()">🛑 Emergency Stop</button>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Bot Status -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">🤖 Bot Status</div>
+                    <div class="panel-badge" id="activeBots">9 Active</div>
+                </div>
+                <div id="botList"></div>
+            </div>
+
+            <!-- Trading Dashboard -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">📈 Trading Dashboard</div>
+                    <div class="panel-badge" id="positionCount">0 Positions</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Daily P&L</div>
+                    <div class="stat-value stat-positive" id="dailyPnl">+$0.00</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">Win Rate (24h)</div>
+                    <div class="stat-value" id="winRate">0%</div>
+                </div>
+
+                <div id="positionList"></div>
+            </div>
+
+            <!-- Content Engine -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">🎬 Content Engine</div>
+                    <div class="panel-badge">2 Channels</div>
+                </div>
+
+                <div class="channel-stats">
+                    <div class="channel-name">Arc Highlightz</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="arcClipsToday">0</div>
+                            <div class="stat-text">Clips Today</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="arcViews">0</div>
+                            <div class="stat-text">Views (7d)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="arcSubs">0</div>
+                            <div class="stat-text">Subscribers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="channel-stats">
+                    <div class="channel-name">FomoHighlights</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="rageClipsToday">0</div>
+                            <div class="stat-text">Clips Today</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="rageViews">0</div>
+                            <div class="stat-text">Views (7d)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="rageSubs">0</div>
+                            <div class="stat-text">Subscribers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">YouTube API Quota</div>
+                    <div class="stat-value">
+                        <span id="ytQuotaUsed">0</span> / 10,000
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="ytQuotaBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Tracker -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">💰 Revenue Tracker</div>
+                    <div class="panel-badge" id="totalRevenue">$0/mo</div>
+                </div>
+
+                <div class="revenue-stream">
+                    <div class="stream-name">OpenClaw Business</div>
+                    <div class="stream-amount" id="openclawRevenue">$0 MRR</div>
+                    <div class="stat-text" id="openclawClients">0 clients this month</div>
+                </div>
+
+                <div class="revenue-stream">
+                    <div class="stream-name">Trading P&L</div>
+                    <div class="stream-amount" id="tradingRevenue">$0</div>
+                    <div class="stat-text">Monthly performance</div>
+                </div>
+
+                <div class="revenue-stream">
+                    <div class="stream-name">Content Monetization</div>
+                    <div class="stream-amount" id="contentRevenue">$0</div>
+                    <div class="stat-text">Ad revenue estimate</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">Monthly Target: $10,000</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="revenueProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="stat-text" style="margin-top: 0.5rem" id="revenuePercent">0% achieved</div>
+                </div>
+            </div>
+
+            <!-- System Health -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">⚙️ System Health</div>
+                    <div class="panel-badge">All Systems Operational</div>
+                </div>
+
+                <div class="health-item">
+                    <span class="health-label">OpenAI API Usage</span>
+                    <span class="health-value" id="openaiUsage">0%</span>
+                </div>
+
+                <div class="health-item">
+                    <span class="health-label">Hyperliquid Rate Limit</span>
+                    <span class="health-value" id="hyperliquidRate">Good</span>
+                </div>
+
+                <div class="health-item">
+                    <span class="health-label">Workspace Size</span>
+                    <span class="health-value" id="workspaceSize">0 MB</span>
+                </div>
+
+                <div class="health-item">
+                    <span class="health-label">Data Folder</span>
+                    <span class="health-value" id="dataSize">0 MB</span>
+                </div>
+
+                <div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
+                    <strong>Recent Errors (0)</strong>
+                </div>
+                <div id="errorLog">
+                    <div style="color: var(--text-dim); text-align: center; padding: 2rem;">
+                        No recent errors
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Chart (placeholder) -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">📊 Performance Chart</div>
+                    <div class="panel-badge">7 Days</div>
+                </div>
+                <div class="chart-container">
+                    Chart: Cumulative P&L (coming soon)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data generator
+        const mockData = {
+            bots: [
+                { name: 'RSI Bot', status: 'running', interval: '30 min', lastRun: '2 min ago', nextRun: '28 min', errors: 0 },
+                { name: 'SMC Bot', status: 'running', interval: 'Hourly', lastRun: '15 min ago', nextRun: '45 min', errors: 0 },
+                { name: 'Arc Highlightz Clipper', status: 'idle', interval: '30 min', lastRun: '5 min ago', nextRun: '25 min', errors: 0 },
+                { name: 'FomoHighlights Clipper', status: 'running', interval: '30 min', lastRun: '1 min ago', nextRun: '29 min', errors: 0 },
+                { name: 'Content Health Monitor', status: 'idle', interval: 'Hourly', lastRun: '42 min ago', nextRun: '18 min', errors: 0 },
+                { name: 'Data Collector', status: 'idle', interval: 'Daily', lastRun: '3 hours ago', nextRun: '21 hours', errors: 0 },
+                { name: 'Morning Market Briefing', status: 'idle', interval: 'Daily 9AM', lastRun: 'Yesterday', nextRun: '4 hours', errors: 0 },
+                { name: 'Idea Generator', status: 'idle', interval: 'Weekly', lastRun: '2 days ago', nextRun: '5 days', errors: 0 },
+                { name: 'Security Scan', status: 'idle', interval: 'Daily', lastRun: '18 hours ago', nextRun: '6 hours', errors: 0 },
+            ],
+            positions: [
+                { coin: 'BTC', direction: 'LONG', size: '0.01364', entry: 67637, pnl: 125.45, pnlPercent: 2.8 },
+                { coin: 'ETH', direction: 'SHORT', size: '0.0049', entry: 1981, pnl: -15.23, pnlPercent: -0.9 },
+                { coin: 'SOL', direction: 'LONG', size: '20.4', entry: 0.94504, pnl: 8.92, pnlPercent: 1.2 },
+                { coin: 'DOGE', direction: 'LONG', size: '4309', entry: 0.097235, pnl: 42.18, pnlPercent: 1.5 },
+            ],
+            stats: {
+                dailyPnl: 161.32,
+                winRate: 75,
+                positionCount: 4,
+                arcClipsToday: 3,
+                arcViews: 2847,
+                arcSubs: 42,
+                rageClipsToday: 2,
+                rageViews: 1923,
+                rageSubs: 38,
+                ytQuotaUsed: 3420,
+                openclawRevenue: 0,
+                openclawClients: 0,
+                tradingRevenue: 850,
+                contentRevenue: 0,
+                totalRevenue: 850,
+                monthlyTarget: 10000,
+            }
+        };
+
+        function renderBots() {
+            const botList = document.getElementById('botList');
+            botList.innerHTML = mockData.bots.map(bot => `
+                <div class="bot-item ${bot.status}">
+                    <div class="bot-info">
+                        <div class="bot-name">${bot.name}</div>
+                        <div class="bot-meta">
+                            ${bot.interval} • Last: ${bot.lastRun} • Next: ${bot.nextRun} • Errors: ${bot.errors}
+                        </div>
+                    </div>
+                    <div class="bot-status status-${bot.status}">${bot.status.toUpperCase()}</div>
+                </div>
+            `).join('');
+
+            const runningCount = mockData.bots.filter(b => b.status === 'running').length;
+            document.getElementById('activeBots').textContent = `${runningCount} Running`;
+        }
+
+        function renderPositions() {
+            const positionList = document.getElementById('positionList');
+            if (mockData.positions.length === 0) {
+                positionList.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 2rem;">No open positions</div>';
+                return;
+            }
+
+            positionList.innerHTML = mockData.positions.map(pos => `
+                <div class="position-item">
+                    <div>
+                        <div class="position-coin position-${pos.direction.toLowerCase()}">${pos.coin} ${pos.direction}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary)">Size: ${pos.size}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary)">Entry</div>
+                        <div>$${pos.entry.toFixed(2)}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary)">P&L</div>
+                        <div class="${pos.pnl >= 0 ? 'position-long' : 'position-short'}">
+                            ${pos.pnl >= 0 ? '+' : ''}$${pos.pnl.toFixed(2)}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary)">%</div>
+                        <div class="${pos.pnlPercent >= 0 ? 'position-long' : 'position-short'}">
+                            ${pos.pnlPercent >= 0 ? '+' : ''}${pos.pnlPercent.toFixed(2)}%
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderStats() {
+            const { stats } = mockData;
+
+            document.getElementById('dailyPnl').textContent = `${stats.dailyPnl >= 0 ? '+' : ''}$${stats.dailyPnl.toFixed(2)}`;
+            document.getElementById('dailyPnl').className = `stat-value ${stats.dailyPnl >= 0 ? 'stat-positive' : 'stat-negative'}`;
+            
+            document.getElementById('winRate').textContent = `${stats.winRate}%`;
+            document.getElementById('positionCount').textContent = `${stats.positionCount} Positions`;
+
+            document.getElementById('arcClipsToday').textContent = stats.arcClipsToday;
+            document.getElementById('arcViews').textContent = stats.arcViews.toLocaleString();
+            document.getElementById('arcSubs').textContent = stats.arcSubs;
+
+            document.getElementById('rageClipsToday').textContent = stats.rageClipsToday;
+            document.getElementById('rageViews').textContent = stats.rageViews.toLocaleString();
+            document.getElementById('rageSubs').textContent = stats.rageSubs;
+
+            document.getElementById('ytQuotaUsed').textContent = stats.ytQuotaUsed.toLocaleString();
+            const quotaPercent = (stats.ytQuotaUsed / 10000) * 100;
+            document.getElementById('ytQuotaBar').style.width = `${quotaPercent}%`;
+
+            document.getElementById('openclawRevenue').textContent = `$${stats.openclawRevenue} MRR`;
+            document.getElementById('openclawClients').textContent = `${stats.openclawClients} clients this month`;
+            document.getElementById('tradingRevenue').textContent = `$${stats.tradingRevenue}`;
+            document.getElementById('contentRevenue').textContent = `$${stats.contentRevenue}`;
+            document.getElementById('totalRevenue').textContent = `$${stats.totalRevenue}/mo`;
+
+            const revenuePercent = (stats.totalRevenue / stats.monthlyTarget) * 100;
+            document.getElementById('revenueProgress').style.width = `${revenuePercent}%`;
+            document.getElementById('revenuePercent').textContent = `${revenuePercent.toFixed(1)}% achieved`;
+
+            document.getElementById('openaiUsage').textContent = '15%';
+            document.getElementById('hyperliquidRate').textContent = 'Good';
+            document.getElementById('workspaceSize').textContent = '245 MB';
+            document.getElementById('dataSize').textContent = '3.1 MB';
+        }
+
+        function refreshDashboard() {
+            // Update last update time
+            const now = new Date();
+            document.getElementById('lastUpdate').innerHTML = `Last update: ${now.toLocaleTimeString()}`;
+
+            // Re-render all sections
+            renderBots();
+            renderPositions();
+            renderStats();
+        }
+
+        function emergencyStop() {
+            if (confirm('⚠️ This will stop ALL bots and cron jobs. Continue?')) {
+                alert('Emergency stop feature coming soon. For now, use: openclaw cron kill <id>');
+            }
+        }
+
+        // Auto-refresh every 10 seconds
+        setInterval(refreshDashboard, 10000);
+
+        // Initial render
+        refreshDashboard();
+    </script>
+</body>
+</html>
