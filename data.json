@@ -1,0 +1,451 @@
+{
+  "timestamp": "2026-02-26T05:06:57.167306",
+  "bots": [
+    {
+      "name": "RSI Bot",
+      "status": "idle",
+      "interval": "30 min",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "SMC Bot",
+      "status": "idle",
+      "interval": "Hourly",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "Arc Highlightz Clipper",
+      "status": "idle",
+      "interval": "30 min",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "FomoHighlights Clipper",
+      "status": "idle",
+      "interval": "30 min",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "Content Health Monitor",
+      "status": "idle",
+      "interval": "Hourly",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "Data Collector",
+      "status": "idle",
+      "interval": "Daily",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "Morning Market Briefing",
+      "status": "idle",
+      "interval": "Daily 9AM",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "Idea Generator",
+      "status": "idle",
+      "interval": "Weekly",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    },
+    {
+      "name": "Security Scan",
+      "status": "idle",
+      "interval": "Daily",
+      "lastRun": "Unknown",
+      "nextRun": "Unknown",
+      "errors": 0
+    }
+  ],
+  "positions": [
+    {
+      "coin": "ADA",
+      "direction": "LONG",
+      "size": 196.0,
+      "entry": 0,
+      "sl": 0,
+      "tp": 0,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AXS",
+      "direction": "LONG",
+      "size": 40.7,
+      "entry": 1.34,
+      "sl": 1.3132,
+      "tp": 1.4219,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AZTEC",
+      "direction": "LONG",
+      "size": 1693.0,
+      "entry": 0.0324,
+      "sl": 0.0317,
+      "tp": 0.034,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AZTEC",
+      "direction": "LONG",
+      "size": 1530.0,
+      "entry": 0.034,
+      "sl": 0.034109,
+      "tp": 0.036545,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "TIA",
+      "direction": "LONG",
+      "size": 160.3,
+      "entry": 0.33015,
+      "sl": 0.32849,
+      "tp": 0.33383,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "HYPE",
+      "direction": "LONG",
+      "size": 1.78,
+      "entry": 29.597,
+      "sl": 29.501,
+      "tp": 30.051,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AZTEC",
+      "direction": "LONG",
+      "size": 1480.0,
+      "entry": 0.034873,
+      "sl": 0.035123,
+      "tp": 0.037632,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "ONDO",
+      "direction": "LONG",
+      "size": 1.0,
+      "entry": 0.26676,
+      "sl": 0.26581,
+      "tp": 0.26869,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "SUI",
+      "direction": "LONG",
+      "size": 20.4,
+      "entry": 0.94504,
+      "sl": 0.94177,
+      "tp": 0.9535,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AZTEC",
+      "direction": "LONG",
+      "size": 1024.0,
+      "entry": 0.032253,
+      "sl": 0.032217,
+      "tp": 0.034518,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "PUMP",
+      "direction": "SHORT",
+      "size": 157569.0,
+      "entry": 0.002072,
+      "sl": 0.0021034285714285716,
+      "tp": 0.0020121428571428573,
+      "strategy": "SMC",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "PUMP",
+      "direction": "LONG",
+      "size": 253047.0,
+      "entry": 0.00208,
+      "sl": 0.0020599,
+      "tp": 0.0021171,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "PUMP",
+      "direction": "LONG",
+      "size": 250023.0,
+      "entry": 0.002076,
+      "sl": 0.002056,
+      "tp": 0.002114,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AZTEC",
+      "direction": "LONG",
+      "size": 37.0,
+      "entry": 0.032172,
+      "sl": 0.031932,
+      "tp": 0.034213,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "ONDO",
+      "direction": "LONG",
+      "size": 87.0,
+      "entry": 0.26266,
+      "sl": 0.26068,
+      "tp": 0.26645,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "HYPE",
+      "direction": "LONG",
+      "size": 14.26,
+      "entry": 29.484,
+      "sl": 29.3006,
+      "tp": 29.8493,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "DOGE",
+      "direction": "LONG",
+      "size": 4309.0,
+      "entry": 0.097235,
+      "sl": 0.096708,
+      "tp": 0.098241,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "ETH",
+      "direction": "SHORT",
+      "size": 0.0049,
+      "entry": 1981.0,
+      "sl": 1986.7,
+      "tp": 1969.76,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "ADA",
+      "direction": "LONG",
+      "size": 1147.0,
+      "entry": 0.27345,
+      "sl": 0.2716,
+      "tp": 0.2763,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "SUI",
+      "direction": "LONG",
+      "size": 1.5,
+      "entry": 0.92759,
+      "sl": 0.9216,
+      "tp": 0.9382,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "HYPE",
+      "direction": "LONG",
+      "size": 16.92,
+      "entry": 29.212,
+      "sl": 28.9683,
+      "tp": 29.6979,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AVAX",
+      "direction": "LONG",
+      "size": 55.85,
+      "entry": 8.9267,
+      "sl": 8.881,
+      "tp": 9.022,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "BTC",
+      "direction": "LONG",
+      "size": 0.01364,
+      "entry": 67637.0,
+      "sl": 67451.5,
+      "tp": 68060.6,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "ONDO",
+      "direction": "LONG",
+      "size": 1645.0,
+      "entry": 0.261024,
+      "sl": 0.25861,
+      "tp": 0.2657,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "DOGE",
+      "direction": "LONG",
+      "size": 200.0,
+      "entry": 0.095877,
+      "sl": 0.095344,
+      "tp": 0.096958,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "DOGE",
+      "direction": "SHORT",
+      "size": 3283.0,
+      "entry": 0.095799,
+      "sl": 0.096631,
+      "tp": 0.094077,
+      "strategy": "SMC",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "AZTEC",
+      "direction": "LONG",
+      "size": 3.0,
+      "entry": 0.030553,
+      "sl": 0.030465,
+      "tp": 0.032641,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "OM",
+      "direction": "LONG",
+      "size": 0.4,
+      "entry": 0.06755,
+      "sl": 0.067326,
+      "tp": 0.072135,
+      "strategy": "Funding",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "BTC",
+      "direction": "SHORT",
+      "size": 0.00013,
+      "entry": 67346.0,
+      "sl": 67649.5,
+      "tp": 66691.0,
+      "strategy": "SMC",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "TIA",
+      "direction": "SHORT",
+      "size": 28.5,
+      "entry": 0.31368,
+      "sl": 0.31744,
+      "tp": 0.30576,
+      "strategy": "SMC",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "PUMP",
+      "direction": "SHORT",
+      "size": 4338.0,
+      "entry": 0.002036,
+      "sl": 0.002071,
+      "tp": 0.001975,
+      "strategy": "SMC",
+      "pnl": 0,
+      "pnlPercent": 0
+    },
+    {
+      "coin": "kPEPE",
+      "direction": "LONG",
+      "size": 849.0,
+      "entry": 0.004056,
+      "sl": 0.004016,
+      "tp": 0.004133,
+      "strategy": "RSI",
+      "pnl": 0,
+      "pnlPercent": 0
+    }
+  ],
+  "stats": {
+    "dailyPnl": 0,
+    "winRate": 0,
+    "positionCount": 32,
+    "totalRevenue": 850,
+    "arcClipsToday": 0,
+    "arcViews": 0,
+    "arcSubs": 0,
+    "rageClipsToday": 0,
+    "rageViews": 0,
+    "rageSubs": 0,
+    "ytQuotaUsed": 0,
+    "openclawRevenue": 0,
+    "openclawClients": 0,
+    "tradingRevenue": 850,
+    "contentRevenue": 0,
+    "monthlyTarget": 10000,
+    "workspaceSize": 14056.37,
+    "dataSize": 6.48
+  }
+}

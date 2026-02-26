@@ -1,0 +1,187 @@
+#!/usr/bin/env python3
+"""
+Generate data.json for OpenClaw Dashboard
+Run this periodically (e.g., via cron) to update dashboard with real data
+"""
+
+import json
+import os
+import re
+from datetime import datetime
+import subprocess
+
+WORKSPACE = r"C:\Users\kanaw\.openclaw\workspace"
+OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "data.json")
+
+def parse_trades():
+    """Parse trades.md for open positions"""
+    positions = []
+    
+    try:
+        trades_file = os.path.join(WORKSPACE, "memory", "trades.md")
+        if not os.path.exists(trades_file):
+            return positions
+        
+        with open(trades_file, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+        
+        current_pos = None
+        
+        for line in content.split('\n'):
+            if line.startswith('## OPEN:'):
+                # New position
+                match = re.match(r'## OPEN: (\w+) (LONG|SHORT)', line)
+                if match:
+                    if current_pos:
+                        positions.append(current_pos)
+                    current_pos = {
+                        'coin': match.group(1),
+                        'direction': match.group(2),
+                        'size': 0,
+                        'entry': 0,
+                        'sl': 0,
+                        'tp': 0,
+                        'strategy': 'Unknown',
+                        'pnl': 0,
+                        'pnlPercent': 0
+                    }
+            elif current_pos:
+                # Parse position details
+                if '**Strategy:**' in line:
+                    current_pos['strategy'] = line.split('**Strategy:**')[1].strip().split('\n')[0]
+                elif '**Size:**' in line:
+                    try:
+                        size_str = line.split('**Size:**')[1].strip().split('\n')[0]
+                        current_pos['size'] = float(size_str)
+                    except:
+                        pass
+                elif '**Entry:**' in line:
+                    try:
+                        entry_str = line.split('$')[1].strip().split('\n')[0]
+                        current_pos['entry'] = float(entry_str)
+                    except:
+                        pass
+                elif '**Stop Loss:**' in line:
+                    try:
+                        sl_str = line.split('$')[1].strip().split('\n')[0]
+                        current_pos['sl'] = float(sl_str)
+                    except:
+                        pass
+                elif '**Take Profit:**' in line:
+                    try:
+                        tp_str = line.split('$')[1].strip().split('\n')[0]
+                        current_pos['tp'] = float(tp_str)
+                    except:
+                        pass
+        
+        if current_pos:
+            positions.append(current_pos)
+    
+    except Exception as e:
+        print(f"Error parsing trades: {e}")
+    
+    return positions
+
+def get_folder_size(folder):
+    """Calculate folder size in MB"""
+    total_size = 0
+    try:
+        for dirpath, dirnames, filenames in os.walk(folder):
+            # Skip large dirs
+            if '.git' in dirpath or 'node_modules' in dirpath:
+                continue
+            for filename in filenames:
+                filepath = os.path.join(dirpath, filename)
+                if os.path.exists(filepath):
+                    try:
+                        total_size += os.path.getsize(filepath)
+                    except:
+                        pass
+    except:
+        pass
+    return round(total_size / (1024 * 1024), 2)
+
+def get_cron_bots():
+    """Get cron job status (mock for now - can be enhanced)"""
+    # TODO: Parse `openclaw cron list` output
+    return [
+        { 'name': 'RSI Bot', 'status': 'idle', 'interval': '30 min', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'SMC Bot', 'status': 'idle', 'interval': 'Hourly', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'Arc Highlightz Clipper', 'status': 'idle', 'interval': '30 min', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'FomoHighlights Clipper', 'status': 'idle', 'interval': '30 min', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'Content Health Monitor', 'status': 'idle', 'interval': 'Hourly', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'Data Collector', 'status': 'idle', 'interval': 'Daily', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'Morning Market Briefing', 'status': 'idle', 'interval': 'Daily 9AM', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'Idea Generator', 'status': 'idle', 'interval': 'Weekly', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+        { 'name': 'Security Scan', 'status': 'idle', 'interval': 'Daily', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
+    ]
+
+def calculate_stats(positions):
+    """Calculate trading stats from positions"""
+    if not positions:
+        return {
+            'dailyPnl': 0,
+            'winRate': 0,
+            'positionCount': 0,
+            'totalRevenue': 0,
+        }
+    
+    total_pnl = sum(p['pnl'] for p in positions)
+    positive = sum(1 for p in positions if p['pnl'] > 0)
+    win_rate = round((positive / len(positions)) * 100) if positions else 0
+    
+    return {
+        'dailyPnl': round(total_pnl, 2),
+        'winRate': win_rate,
+        'positionCount': len(positions),
+        'totalRevenue': 850,  # Mock - could track actual revenue
+    }
+
+def main():
+    print("Generating dashboard data...")
+    
+    # Parse real data
+    positions = parse_trades()
+    bots = get_cron_bots()
+    stats = calculate_stats(positions)
+    
+    # System health
+    workspace_size = get_folder_size(WORKSPACE)
+    data_size = get_folder_size(os.path.join(WORKSPACE, "data"))
+    
+    # Build data object
+    data = {
+        "timestamp": datetime.now().isoformat(),
+        "bots": bots,
+        "positions": positions,
+        "stats": {
+            **stats,
+            'arcClipsToday': 0,  # TODO: Count from Discord/logs
+            'arcViews': 0,
+            'arcSubs': 0,
+            'rageClipsToday': 0,
+            'rageViews': 0,
+            'rageSubs': 0,
+            'ytQuotaUsed': 0,
+            'openclawRevenue': 0,
+            'openclawClients': 0,
+            'tradingRevenue': 850,
+            'contentRevenue': 0,
+            'monthlyTarget': 10000,
+            'workspaceSize': workspace_size,
+            'dataSize': data_size,
+        }
+    }
+    
+    # Write to file
+    with open(OUTPUT_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+    
+    print(f"[OK] Generated {OUTPUT_FILE}")
+    print(f"  - {len(positions)} positions")
+    print(f"  - {len(bots)} bots")
+    print(f"  - Workspace: {workspace_size} MB")
+    print(f"  - Data: {data_size} MB")
+
+if __name__ == "__main__":
+    main()
