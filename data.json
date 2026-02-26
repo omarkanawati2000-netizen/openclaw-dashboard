@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-26T05:34:24.105630",
+  "timestamp": "2026-02-26T05:44:05.610395",
   "bots": [
     {
       "name": "RSI Bot",
@@ -460,12 +460,17 @@
     "rageViews": 0,
     "rageSubs": 0,
     "ytQuotaUsed": 0,
+    "openaiUsage": 15,
+    "hyperliquidRate": "Good",
+    "twitchUsage": "Unknown",
+    "anthropicTokens": 134000,
+    "anthropicPercent": 67.0,
     "openclawRevenue": 0,
     "openclawClients": 0,
     "tradingRevenue": 850,
     "contentRevenue": 0,
     "monthlyTarget": 10000,
-    "workspaceSize": 14098.12,
+    "workspaceSize": 14098.17,
     "dataSize": 6.48
   }
 }

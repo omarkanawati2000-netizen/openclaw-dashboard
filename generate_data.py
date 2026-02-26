@@ -197,6 +197,38 @@ def calculate_stats(positions):
         'totalRevenue': 850,  # Mock - could track actual revenue
     }
 
+def get_api_usage(sessions):
+    """Get real API usage data"""
+    usage = {}
+    
+    # Anthropic API - sum all session tokens
+    total_tokens = sum(s.get('tokens', 0) for s in sessions)
+    usage['anthropicTokens'] = total_tokens
+    usage['anthropicPercent'] = min((total_tokens / 200000) * 100, 100)
+    
+    # YouTube API - try to get from quota file or config
+    try:
+        # Check if we track YouTube quota somewhere
+        quota_file = os.path.join(WORKSPACE, 'ventures', 'clip_engine', 'youtube_quota.txt')
+        if os.path.exists(quota_file):
+            with open(quota_file, 'r') as f:
+                usage['ytQuotaUsed'] = int(f.read().strip())
+        else:
+            usage['ytQuotaUsed'] = 0
+    except:
+        usage['ytQuotaUsed'] = 0
+    
+    # OpenAI API - estimate from usage (could integrate with OpenAI API)
+    usage['openaiUsage'] = 15  # Mock for now
+    
+    # Hyperliquid - always "Good" unless we detect rate limiting
+    usage['hyperliquidRate'] = 'Good'
+    
+    # Twitch API - would need to track API calls
+    usage['twitchUsage'] = 'Unknown'
+    
+    return usage
+
 def main():
     print("Generating dashboard data...")
     
@@ -205,6 +237,7 @@ def main():
     bots = get_cron_bots()
     sessions = get_active_sessions()
     stats = calculate_stats(positions)
+    api_usage = get_api_usage(sessions)
     
     # System health
     workspace_size = get_folder_size(WORKSPACE)
@@ -224,7 +257,12 @@ def main():
             'rageClipsToday': 0,
             'rageViews': 0,
             'rageSubs': 0,
-            'ytQuotaUsed': 0,
+            'ytQuotaUsed': api_usage.get('ytQuotaUsed', 0),
+            'openaiUsage': api_usage.get('openaiUsage', 15),
+            'hyperliquidRate': api_usage.get('hyperliquidRate', 'Good'),
+            'twitchUsage': api_usage.get('twitchUsage', 'Unknown'),
+            'anthropicTokens': api_usage.get('anthropicTokens', 0),
+            'anthropicPercent': api_usage.get('anthropicPercent', 0),
             'openclawRevenue': 0,
             'openclawClients': 0,
             'tradingRevenue': 850,
@@ -243,6 +281,7 @@ def main():
     print(f"  - {len(positions)} positions")
     print(f"  - {len(bots)} bots")
     print(f"  - {len(sessions)} sessions")
+    print(f"  - API: {api_usage.get('anthropicTokens', 0):,} Anthropic tokens, {api_usage.get('ytQuotaUsed', 0)} YT quota")
     print(f"  - Workspace: {workspace_size} MB")
     print(f"  - Data: {data_size} MB")
 
