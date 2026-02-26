@@ -422,6 +422,68 @@
             animation: spin 0.8s linear infinite;
         }
 
+
+        /* Sessions Tracker */
+        .session-item {
+            background: var(--bg-dark);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            border-left: 3px solid var(--orange);
+            transition: all 0.2s;
+        }
+
+        .session-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .session-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .session-channel {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .channel-discord {
+            background: #5865F2;
+            color: white;
+        }
+
+        .channel-telegram {
+            background: #0088cc;
+            color: white;
+        }
+
+        .channel-unknown {
+            background: var(--text-dim);
+            color: var(--bg-dark);
+        }
+
+        .session-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .session-tokens {
+            font-size: 0.8rem;
+            color: var(--orange);
+        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -609,11 +671,37 @@
                     Chart: Cumulative P&L (coming soon)
                 </div>
             </div>
+        
+            <!-- Sessions Tracker -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">💬 Active Sessions</div>
+                    <div class="panel-badge" id="sessionCount">0 Sessions</div>
+                </div>
+                <div id="sessionList"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Mock data generator
+        // Data source (tries real data.json first, falls back to mock)
+        let dashboardData = null;
+        
+        async function loadRealData() {
+            try {
+                const response = await fetch("data.json");
+                if (response.ok) {
+                    dashboardData = await response.json();
+                    console.log("[OK] Loaded real data from data.json");
+                    return true;
+                }
+            } catch (e) {
+                console.warn("[WARN] Could not load data.json, using mock data");
+            }
+            return false;
+        }
+        
+        // Mock data generator (fallback)
         const mockData = {
             bots: [
                 { name: 'RSI Bot', status: 'running', interval: '30 min', lastRun: '2 min ago', nextRun: '28 min', errors: 0 },
@@ -631,6 +719,10 @@
                 { coin: 'ETH', direction: 'SHORT', size: '0.0049', entry: 1981, pnl: -15.23, pnlPercent: -0.9 },
                 { coin: 'SOL', direction: 'LONG', size: '20.4', entry: 0.94504, pnl: 8.92, pnlPercent: 1.2 },
                 { coin: 'DOGE', direction: 'LONG', size: '4309', entry: 0.097235, pnl: 42.18, pnlPercent: 1.5 },
+            ],
+            sessions: [
+                { name: 'Discord #general', channel: 'discord', kind: 'group', model: 'claude-sonnet-4-5', tokens: 89000, lastActive: '2 min ago', sessionKey: 'agent:main:discord:channel:1468193294906425430' },
+                { name: 'Telegram Retards v2', channel: 'telegram', kind: 'group', model: 'claude-sonnet-4-5', tokens: 45000, lastActive: '1 hour ago', sessionKey: 'agent:main:telegram:-1003146730450' },
             ],
             stats: {
                 dailyPnl: 161.32,
@@ -738,6 +830,37 @@
             document.getElementById('hyperliquidRate').textContent = 'Good';
             document.getElementById('workspaceSize').textContent = '245 MB';
             document.getElementById('dataSize').textContent = '3.1 MB';
+        }
+
+
+        function renderSessions() {
+            const data = dashboardData || mockData;
+            const sessionList = document.getElementById('sessionList');
+            
+            if (!data.sessions || data.sessions.length === 0) {
+                sessionList.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 2rem;">No active sessions</div>';
+                return;
+            }
+            
+            sessionList.innerHTML = data.sessions.map(session => `
+                <div class="session-item">
+                    <div class="session-header">
+                        <div class="session-name">${session.name}</div>
+                        <div class="session-channel channel-${session.channel}">${session.channel}</div>
+                    </div>
+                    <div class="session-meta">
+                        Model: ${session.model} • Kind: ${session.kind}
+                    </div>
+                    <div class="session-meta">
+                        Last active: ${session.lastActive}
+                    </div>
+                    <div class="session-tokens">
+                        ${session.tokens.toLocaleString()} tokens used
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('sessionCount').textContent = `${data.sessions.length} Active`;
         }
 
         function refreshDashboard() {

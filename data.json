@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-26T05:06:57.167306",
+  "timestamp": "2026-02-26T05:34:24.105630",
   "bots": [
     {
       "name": "RSI Bot",
@@ -428,6 +428,26 @@
       "pnlPercent": 0
     }
   ],
+  "sessions": [
+    {
+      "name": "Discord #general",
+      "channel": "discord",
+      "kind": "group",
+      "model": "claude-sonnet-4-5",
+      "tokens": 89000,
+      "lastActive": "2 min ago",
+      "sessionKey": "agent:main:discord:channel:1468193294906425430"
+    },
+    {
+      "name": "Telegram Retards v2",
+      "channel": "telegram",
+      "kind": "group",
+      "model": "claude-sonnet-4-5",
+      "tokens": 45000,
+      "lastActive": "1 hour ago",
+      "sessionKey": "agent:main:telegram:-1003146730450"
+    }
+  ],
   "stats": {
     "dailyPnl": 0,
     "winRate": 0,
@@ -445,7 +465,7 @@
     "tradingRevenue": 850,
     "contentRevenue": 0,
     "monthlyTarget": 10000,
-    "workspaceSize": 14056.37,
+    "workspaceSize": 14098.12,
     "dataSize": 6.48
   }
 }
