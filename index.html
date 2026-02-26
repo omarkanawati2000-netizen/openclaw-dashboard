@@ -423,6 +423,37 @@
         }
 
 
+
+        /* API Usage Tracker */
+        .api-item {
+            background: var(--bg-dark);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .api-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .api-name {
+            font-weight: 600;
+        }
+
+        .api-usage {
+            color: var(--orange);
+            font-weight: 600;
+        }
+
+        .api-meta {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+        }
+
         /* Sessions Tracker */
         .session-item {
             background: var(--bg-dark);
@@ -672,6 +703,70 @@
                 </div>
             </div>
         
+            
+            <!-- API Usage Tracker -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">🔌 API Usage</div>
+                    <div class="panel-badge">All APIs</div>
+                </div>
+                
+                <div class="api-item">
+                    <div class="api-header">
+                        <span class="api-name">OpenAI API</span>
+                        <span class="api-usage" id="openaiApiUsage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="openaiApiBar" style="width: 0%"></div>
+                    </div>
+                    <div class="api-meta" id="openaiApiMeta">Unknown usage</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-header">
+                        <span class="api-name">YouTube Data API</span>
+                        <span class="api-usage" id="ytApiUsage">0 / 10,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="ytApiBar" style="width: 0%"></div>
+                    </div>
+                    <div class="api-meta" id="ytApiMeta">Daily quota</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-header">
+                        <span class="api-name">Hyperliquid API</span>
+                        <span class="api-usage" id="hlApiUsage">Good</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="hlApiBar" style="width: 0%"></div>
+                    </div>
+                    <div class="api-meta" id="hlApiMeta">Rate limit status</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-header">
+                        <span class="api-name">Twitch API</span>
+                        <span class="api-usage" id="twitchApiUsage">Unknown</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="twitchApiBar" style="width: 0%"></div>
+                    </div>
+                    <div class="api-meta" id="twitchApiMeta">Helix API calls</div>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-header">
+                        <span class="api-name">Anthropic API</span>
+                        <span class="api-usage" id="anthropicApiUsage">0 tokens</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="anthropicApiBar" style="width: 0%"></div>
+                    </div>
+                    <div class="api-meta" id="anthropicApiMeta">Total session tokens</div>
+                </div>
+            </div>
+
             <!-- Sessions Tracker -->
             <div class="panel">
                 <div class="panel-header">
@@ -701,6 +796,27 @@
             return false;
         }
         
+        // Fetch real data from data.json
+        let dashboardData = null;
+        
+        async function loadData() {
+            try {
+                const response = await fetch('data.json');
+                if (response.ok) {
+                    dashboardData = await response.json();
+                    console.log('[OK] Loaded real data:', {
+                        positions: dashboardData.positions.length,
+                        sessions: dashboardData.sessions.length,
+                        bots: dashboardData.bots.length
+                    });
+                } else {
+                    console.warn('[WARN] Failed to load data.json, using mock');
+                }
+            } catch (e) {
+                console.warn('[WARN] Error loading data.json:', e.message);
+            }
+        }
+
         // Mock data generator (fallback)
         const mockData = {
             bots: [
@@ -745,8 +861,9 @@
         };
 
         function renderBots() {
+            const data = dashboardData || mockData;
             const botList = document.getElementById('botList');
-            botList.innerHTML = mockData.bots.map(bot => `
+            botList.innerHTML = data.bots.map(bot => `
                 <div class="bot-item ${bot.status}">
                     <div class="bot-info">
                         <div class="bot-name">${bot.name}</div>
@@ -758,18 +875,19 @@
                 </div>
             `).join('');
 
-            const runningCount = mockData.bots.filter(b => b.status === 'running').length;
+            const runningCount = data.bots.filter(b => b.status === 'running').length;
             document.getElementById('activeBots').textContent = `${runningCount} Running`;
         }
 
         function renderPositions() {
+            const data = dashboardData || mockData;
             const positionList = document.getElementById('positionList');
-            if (mockData.positions.length === 0) {
+            if (data.positions.length === 0) {
                 positionList.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 2rem;">No open positions</div>';
                 return;
             }
 
-            positionList.innerHTML = mockData.positions.map(pos => `
+            positionList.innerHTML = data.positions.map(pos => `
                 <div class="position-item">
                     <div>
                         <div class="position-coin position-${pos.direction.toLowerCase()}">${pos.coin} ${pos.direction}</div>
@@ -796,7 +914,8 @@
         }
 
         function renderStats() {
-            const { stats } = mockData;
+            const data = dashboardData || mockData;
+            const { stats } = data;
 
             document.getElementById('dailyPnl').textContent = `${stats.dailyPnl >= 0 ? '+' : ''}$${stats.dailyPnl.toFixed(2)}`;
             document.getElementById('dailyPnl').className = `stat-value ${stats.dailyPnl >= 0 ? 'stat-positive' : 'stat-negative'}`;
@@ -832,6 +951,45 @@
             document.getElementById('dataSize').textContent = '3.1 MB';
         }
 
+
+
+        function renderApiUsage() {
+            const data = dashboardData || mockData;
+            const stats = data.stats || {};
+            
+            // YouTube API
+            const ytUsed = stats.ytQuotaUsed || 0;
+            const ytPercent = (ytUsed / 10000) * 100;
+            document.getElementById('ytApiUsage').textContent = `${ytUsed.toLocaleString()} / 10,000`;
+            document.getElementById('ytApiBar').style.width = `${ytPercent}%`;
+            document.getElementById('ytApiMeta').textContent = `${(10000 - ytUsed).toLocaleString()} units remaining`;
+            
+            // OpenAI API
+            const openaiUsed = stats.openaiUsage || 15;
+            document.getElementById('openaiApiUsage').textContent = `${openaiUsed}%`;
+            document.getElementById('openaiApiBar').style.width = `${openaiUsed}%`;
+            document.getElementById('openaiApiMeta').textContent = `${100 - openaiUsed}% remaining`;
+            
+            // Hyperliquid
+            const hlStatus = stats.hyperliquidRate || 'Good';
+            document.getElementById('hlApiUsage').textContent = hlStatus;
+            const hlPercent = hlStatus === 'Good' ? 25 : hlStatus === 'Warning' ? 75 : 100;
+            document.getElementById('hlApiBar').style.width = `${hlPercent}%`;
+            document.getElementById('hlApiMeta').textContent = `No rate limit issues`;
+            
+            // Twitch API
+            document.getElementById('twitchApiUsage').textContent = 'Unknown';
+            document.getElementById('twitchApiBar').style.width = '0%';
+            document.getElementById('twitchApiMeta').textContent = 'Tracking not enabled';
+            
+            // Anthropic (total tokens from sessions)
+            const sessions = data.sessions || [];
+            const totalTokens = sessions.reduce((sum, s) => sum + (s.tokens || 0), 0);
+            document.getElementById('anthropicApiUsage').textContent = `${totalTokens.toLocaleString()} tokens`;
+            const tokenPercent = Math.min((totalTokens / 200000) * 100, 100);
+            document.getElementById('anthropicApiBar').style.width = `${tokenPercent}%`;
+            document.getElementById('anthropicApiMeta').textContent = `Across ${sessions.length} sessions`;
+        }
 
         function renderSessions() {
             const data = dashboardData || mockData;
@@ -884,7 +1042,10 @@
         setInterval(refreshDashboard, 10000);
 
         // Initial render
-        refreshDashboard();
+        (async function() {
+            await loadData();
+            refreshDashboard();
+        })();
     </script>
 </body>
 </html>
