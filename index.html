@@ -392,10 +392,7 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+        
 
             .position-item {
                 grid-template-columns: 1fr;
@@ -518,6 +515,187 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Enhanced Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .container {
+                padding: 0.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .panel {
+                padding: 1rem;
+            }
+
+            .panel-title {
+                font-size: 1rem;
+            }
+
+            .panel-badge {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.5rem;
+            }
+
+            /* Collapsible panels on mobile */
+            .panel-content {
+                max-height: 400px;
+                overflow-y: auto;
+            }
+
+            .panel-content.collapsed {
+                max-height: 0;
+                overflow: hidden;
+            }
+
+            .panel-header {
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .panel-header::after {
+                content: '▼';
+                margin-left: 0.5rem;
+                font-size: 0.8rem;
+                color: var(--text-dim);
+            }
+
+            .panel-header.collapsed::after {
+                content: '▶';
+            }
+
+            /* Position items stack on mobile */
+            .position-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                padding: 0.75rem;
+            }
+
+            .position-item > div {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            /* Bot items more compact */
+            .bot-item {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+
+            .bot-meta {
+                font-size: 0.7rem;
+            }
+
+            /* Session items more compact */
+            .session-item {
+                padding: 0.75rem;
+            }
+
+            .session-meta {
+                font-size: 0.75rem;
+            }
+
+            /* Stats grid better on mobile */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .stat-number {
+                font-size: 1.2rem;
+            }
+
+            /* Quick actions stack */
+            .quick-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            /* Chart container better spacing */
+            .chart-container {
+                height: 150px;
+                font-size: 0.8rem;
+            }
+
+            /* API items more compact */
+            .api-item {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .api-header {
+                font-size: 0.85rem;
+            }
+
+            /* Hide less critical elements on mobile */
+            .hide-mobile {
+                display: none !important;
+            }
+
+            /* Stat boxes more compact */
+            .stat-box {
+                padding: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .stat-value {
+                font-size: 1.2rem;
+            }
+
+            /* Revenue/health items */
+            .revenue-stream, .health-item {
+                padding: 0.75rem 0;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.1rem;
+            }
+
+            .subtitle {
+                font-size: 0.8rem;
+            }
+
+            .panel {
+                padding: 0.75rem;
+            }
+
+            .bot-item, .session-item {
+                padding: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -544,7 +722,7 @@
                     <div class="panel-title">🤖 Bot Status</div>
                     <div class="panel-badge" id="activeBots">9 Active</div>
                 </div>
-                <div id="botList"></div>
+                <div class="panel-content"><div id="botList"></div></div>
             </div>
 
             <!-- Trading Dashboard -->
@@ -564,7 +742,7 @@
                     <div class="stat-value" id="winRate">0%</div>
                 </div>
 
-                <div id="positionList"></div>
+                <div class="panel-content"><div id="positionList"></div></div>
             </div>
 
             <!-- Content Engine -->
@@ -773,7 +951,7 @@
                     <div class="panel-title">💬 Active Sessions</div>
                     <div class="panel-badge" id="sessionCount">0 Sessions</div>
                 </div>
-                <div id="sessionList"></div>
+                <div class="panel-content"><div id="sessionList"></div></div>
             </div>
         </div>
     </div>
@@ -1041,10 +1219,41 @@
         // Auto-refresh every 10 seconds
         setInterval(refreshDashboard, 10000);
 
+        
+        // Mobile: collapsible panels
+        let collapsedPanels = new Set();
+        
+        function initMobileCollapse() {
+            if (window.innerWidth <= 768) {
+                document.querySelectorAll('.panel-header').forEach(header => {
+                    header.onclick = function() {
+                        const panel = this.closest('.panel');
+                        const content = panel.querySelector('.panel-content') || 
+                                       panel.querySelector('#botList')?.parentElement ||
+                                       panel.querySelector('#positionList')?.parentElement ||
+                                       panel.querySelector('#sessionList')?.parentElement;
+                        
+                        if (content) {
+                            this.classList.toggle('collapsed');
+                            content.classList.toggle('collapsed');
+                        }
+                    };
+                });
+            }
+        }
+
+        // Re-init on window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(initMobileCollapse, 250);
+        });
+
         // Initial render
         (async function() {
             await loadData();
             refreshDashboard();
+            initMobileCollapse();
         })();
     </script>
 </body>
