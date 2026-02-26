@@ -102,26 +102,104 @@ def get_folder_size(folder):
     return round(total_size / (1024 * 1024), 2)
 
 def get_cron_bots():
-    """Get cron job status (mock for now - can be enhanced)"""
-    # TODO: Parse `openclaw cron list` output
+    """Get cron job status from OpenClaw"""
+    bots = []
+    
+    try:
+        # Use PowerShell to run openclaw (it's a .ps1 script)
+        result = subprocess.run(
+            ['powershell', '-Command', 'openclaw', 'cron', 'list'],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        
+        if result.returncode == 0:
+            lines = result.stdout.strip().split('\n')
+            
+            # Skip header line
+            for line in lines[1:]:
+                if not line.strip():
+                    continue
+                
+                # Parse the line (space-separated columns)
+                parts = line.split()
+                if len(parts) < 8:
+                    continue
+                
+                # Extract fields
+                cron_id = parts[0]
+                
+                # Name might have spaces, so find where "cron" starts
+                name_parts = []
+                i = 1
+                while i < len(parts) and not parts[i].startswith('cron'):
+                    name_parts.append(parts[i])
+                    i += 1
+                name = ' '.join(name_parts)
+                
+                # Find other fields
+                next_run = 'Unknown'
+                last_run = 'Unknown'
+                status = 'unknown'
+                
+                # Look for "in" (next run), "ago" (last run), status
+                for j, part in enumerate(parts):
+                    if part == 'in' and j + 1 < len(parts):
+                        next_run = parts[j + 1]
+                    elif part.endswith('ago'):
+                        if j > 0:
+                            last_run = f"{parts[j-1]} {part}"
+                        else:
+                            last_run = part
+                    elif part in ['ok', 'idle', 'error', 'running']:
+                        status = part
+                
+                # Determine interval from schedule
+                interval = 'Unknown'
+                if 'cron' in parts:
+                    sched_idx = parts.index('cron')
+                    if sched_idx + 1 < len(parts):
+                        sched = parts[sched_idx + 1]
+                        if sched == '0':
+                            if sched_idx + 2 < len(parts):
+                                min_part = parts[sched_idx + 2]
+                                if '/' in min_part or '*' in min_part:
+                                    interval = 'Hourly'
+                                else:
+                                    interval = 'Daily'
+                        elif '/' in sched:
+                            interval = sched.replace('*/', 'Every ') + ' min'
+                
+                bots.append({
+                    'name': name[:30],  # Truncate long names
+                    'status': status,
+                    'interval': interval,
+                    'lastRun': last_run,
+                    'nextRun': next_run,
+                    'errors': 0,  # Would need to track from logs
+                    'id': cron_id
+                })
+            
+            print(f"[OK] Parsed {len(bots)} cron jobs from openclaw")
+            return bots
+        else:
+            print(f"[WARN] openclaw cron list failed")
+    except Exception as e:
+        print(f"[WARN] Could not get cron bots: {e}")
+    
+    # Fallback mock data
     return [
         { 'name': 'RSI Bot', 'status': 'idle', 'interval': '30 min', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
         { 'name': 'SMC Bot', 'status': 'idle', 'interval': 'Hourly', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
-        { 'name': 'Arc Highlightz Clipper', 'status': 'idle', 'interval': '30 min', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
-        { 'name': 'FomoHighlights Clipper', 'status': 'idle', 'interval': '30 min', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
-        { 'name': 'Content Health Monitor', 'status': 'idle', 'interval': 'Hourly', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
-        { 'name': 'Data Collector', 'status': 'idle', 'interval': 'Daily', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
-        { 'name': 'Morning Market Briefing', 'status': 'idle', 'interval': 'Daily 9AM', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
-        { 'name': 'Idea Generator', 'status': 'idle', 'interval': 'Weekly', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
-        { 'name': 'Security Scan', 'status': 'idle', 'interval': 'Daily', 'lastRun': 'Unknown', 'nextRun': 'Unknown', 'errors': 0 },
     ]
 
 def get_active_sessions():
     """Get active OpenClaw agent sessions"""
     try:
-        # Run openclaw CLI to list sessions
+        # Run openclaw CLI to list sessions (via PowerShell)
         result = subprocess.run(
-            ['openclaw', 'sessions', 'list', '--json'],
+            ['powershell', '-Command', 'openclaw', 'sessions', 'list', '--json'],
             capture_output=True,
             text=True,
             timeout=10
@@ -202,9 +280,9 @@ def get_api_usage(sessions):
     usage = {}
     
     # Anthropic API - sum all session tokens
-    total_tokens = sum(s.get('tokens', 0) for s in sessions)
+    total_tokens = sum(s.get('tokens', 0) or 0 for s in sessions if isinstance(s, dict))
     usage['anthropicTokens'] = total_tokens
-    usage['anthropicPercent'] = min((total_tokens / 200000) * 100, 100)
+    usage['anthropicPercent'] = min((total_tokens / 200000) * 100, 100) if total_tokens > 0 else 0
     
     # YouTube API - try to get from quota file or config
     try:
