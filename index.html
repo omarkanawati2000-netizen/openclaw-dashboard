@@ -1195,7 +1195,8 @@
             `).join('');
 
             const runningCount = data.bots.filter(b => b.status === 'running').length;
-            document.getElementById('activeBots').textContent = `${runningCount} Running`;
+            const totalBots = data.bots.length;
+            document.getElementById('activeBots').textContent = `${runningCount} Running / ${totalBots} Total`;
         }
 
         function renderPositions() {
