@@ -173,9 +173,14 @@
 
         /* Monthly Target - push down into empty space */
         .monthly-target-box {
-            margin-top: 4rem !important;
+            margin-top: 8rem !important;
             padding-top: 2rem;
             border-top: 2px solid #444;
+        }
+
+        /* Make revenue streams scrollable area taller */
+        .panel:has(.monthly-target-box) .panel-content {
+            max-height: 200px;
         }
 
         /* Revenue Tracker - separate monthly target */
