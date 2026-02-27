@@ -335,6 +335,47 @@ def get_api_usage(sessions):
     
     return usage
 
+def get_machine_health():
+    """Collect machine health metrics"""
+    try:
+        import psutil
+        
+        # CPU
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+        
+        # Memory
+        mem = psutil.virtual_memory()
+        mem_used_gb = mem.used / (1024**3)
+        mem_total_gb = mem.total / (1024**3)
+        mem_percent = mem.percent
+        
+        # Disk (C:)
+        disk = psutil.disk_usage('C:\\')
+        disk_used_gb = disk.used / (1024**3)
+        disk_total_gb = disk.total / (1024**3)
+        disk_percent = disk.percent
+        
+        # Network speed (would need tracking over time for accuracy)
+        net_speed = 0
+        
+        # Python processes
+        python_procs = sum(1 for p in psutil.process_iter(['name']) if 'python' in p.info['name'].lower())
+        
+        return {
+            'cpuPercent': cpu_percent,
+            'memUsedGB': mem_used_gb,
+            'memTotalGB': mem_total_gb,
+            'memPercent': mem_percent,
+            'diskUsedGB': disk_used_gb,
+            'diskTotalGB': disk_total_gb,
+            'diskPercent': disk_percent,
+            'netSpeed': net_speed,
+            'pythonProcesses': python_procs
+        }
+    except Exception as e:
+        print(f"[WARN] Could not get machine health: {e}")
+        return {}
+
 def main():
     print("Generating dashboard data...")
     
@@ -344,6 +385,7 @@ def main():
     sessions = get_active_sessions()
     stats = calculate_stats(positions)
     api_usage = get_api_usage(sessions)
+    machine = get_machine_health()
     
     # System health
     workspace_size = get_folder_size(WORKSPACE)
@@ -355,6 +397,7 @@ def main():
         "bots": bots,
         "positions": positions,
         "sessions": sessions,
+        "machine": machine,
         "stats": {
             **stats,
             'arcClipsToday': 0,  # TODO: Count from Discord/logs
@@ -388,6 +431,7 @@ def main():
     print(f"  - {len(bots)} bots")
     print(f"  - {len(sessions)} sessions")
     print(f"  - API: {api_usage.get('anthropicTokens', 0):,} Anthropic tokens, {api_usage.get('ytQuotaUsed', 0)} YT quota")
+    print(f"  - Machine: CPU {machine.get('cpuPercent', 0):.1f}%, RAM {machine.get('memPercent', 0):.1f}%, {machine.get('pythonProcesses', 0)} Python procs")
     print(f"  - Workspace: {workspace_size} MB")
     print(f"  - Data: {data_size} MB")
 
