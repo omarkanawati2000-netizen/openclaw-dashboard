@@ -111,7 +111,7 @@ def get_cron_bots():
             ['powershell', '-Command', 'openclaw', 'cron', 'list'],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=30
         )
         
         if result.returncode == 0:
@@ -202,7 +202,7 @@ def get_active_sessions():
             ['powershell', '-Command', 'openclaw', 'sessions', 'list', '--json'],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=30
         )
         
         if result.returncode == 0:
