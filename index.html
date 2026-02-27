@@ -601,6 +601,37 @@
             min-width: 100px;
         }
 
+
+        /* Compact, scrollable panels */
+        .panel-content {
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar */
+        .panel-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .panel-content::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: var(--orange-dim);
+            border-radius: 4px;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb:hover {
+            background: var(--orange);
+        }
+
+        /* Make panels more compact */
+        .panel {
+            max-height: 500px;
+        }
+
         /* Enhanced Mobile Responsive */
         @media (max-width: 768px) {
             body {
@@ -639,7 +670,7 @@
 
             /* Collapsible panels on mobile */
             .panel-content {
-                max-height: 400px;
+                max-height: 300px;
                 overflow-y: auto;
             }
 
@@ -891,7 +922,7 @@
                     <div class="panel-badge" id="totalRevenue">$0/mo</div>
                 </div>
 
-                <div class="revenue-stream">
+                <div class="panel-content"><div class="revenue-stream">
                     <div class="stream-name">OpenClaw Business</div>
                     <div class="stream-amount" id="openclawRevenue">$0 MRR</div>
                     <div class="stat-text" id="openclawClients">0 clients this month</div>
@@ -909,7 +940,7 @@
                     <div class="stat-text">Ad revenue estimate</div>
                 </div>
 
-                <div class="stat-box">
+                </div><div class="stat-box">
                     <div class="stat-label">Monthly Target: $10,000</div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="revenueProgress" style="width: 0%"></div>
@@ -925,7 +956,7 @@
                     <div class="panel-badge">All Systems Operational</div>
                 </div>
 
-                <div class="health-item">
+                <div class="panel-content"><div class="health-item">
                     <span class="health-label">OpenAI API Usage</span>
                     <span class="health-value" id="openaiUsage">0%</span>
                 </div>
@@ -945,7 +976,7 @@
                     <span class="health-value" id="dataSize">0 MB</span>
                 </div>
 
-                <div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
+                </div><div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
                     <strong>Recent Errors (0)</strong>
                 </div>
                 <div id="errorLog">
@@ -974,7 +1005,7 @@
                     <div class="panel-badge">All APIs</div>
                 </div>
                 
-                <div class="api-item">
+                <div class="panel-content"><div class="api-item">
                     <div class="api-header">
                         <span class="api-name">OpenAI API</span>
                         <span class="api-usage" id="openaiApiUsage">0%</span>
@@ -1028,6 +1059,8 @@
                     </div>
                     <div class="api-meta" id="anthropicApiMeta">Total session tokens</div>
                 </div>
+            </div>
+
             </div>
 
             <!-- Sessions Tracker -->
