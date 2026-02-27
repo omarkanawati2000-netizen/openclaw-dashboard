@@ -1063,20 +1063,28 @@
         let dashboardData = null;
         
         async function loadData() {
+            console.log('[DEBUG] Attempting to load data.json...');
             try {
                 const response = await fetch('data.json');
+                console.log('[DEBUG] Fetch response:', response.status, response.statusText);
+                
                 if (response.ok) {
                     dashboardData = await response.json();
                     console.log('[OK] Loaded real data:', {
-                        positions: dashboardData.positions.length,
-                        sessions: dashboardData.sessions.length,
-                        bots: dashboardData.bots.length
+                        positions: dashboardData.positions?.length || 0,
+                        sessions: dashboardData.sessions?.length || 0,
+                        bots: dashboardData.bots?.length || 0,
+                        anthropicTokens: dashboardData.stats?.anthropicTokens || 0,
+                        ytQuota: dashboardData.stats?.ytQuotaUsed || 0
                     });
+                    return true;
                 } else {
-                    console.warn('[WARN] Failed to load data.json, using mock');
+                    console.warn('[WARN] data.json fetch failed:', response.status);
+                    return false;
                 }
             } catch (e) {
-                console.warn('[WARN] Error loading data.json:', e.message);
+                console.error('[ERROR] Failed to load data.json:', e.message);
+                return false;
             }
         }
 
