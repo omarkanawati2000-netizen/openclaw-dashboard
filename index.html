@@ -239,6 +239,29 @@
             border-color: var(--orange);
         }
 
+        /* Machine Health metrics */
+        .health-metric {
+            margin-bottom: 1rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            color: var(--orange);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
         /* Mobile: stack sessions */
         @media (max-width: 768px) {
             .panel-fullwidth .session-list-grid {
@@ -1120,6 +1143,60 @@
                 </div>
             </div>
 
+            <!-- Machine Health -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">💻 Machine Health</div>
+                    <div class="panel-badge" id="machineStatus">Good</div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="health-metric">
+                        <div class="metric-header">
+                            <span class="metric-name">CPU Usage</span>
+                            <span class="metric-value" id="cpuUsage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="cpuBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="health-metric">
+                        <div class="metric-header">
+                            <span class="metric-name">Memory (RAM)</span>
+                            <span class="metric-value" id="memUsage">0 GB / 0 GB</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="memBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="health-metric">
+                        <div class="metric-header">
+                            <span class="metric-name">Disk (C:)</span>
+                            <span class="metric-value" id="diskUsage">0 GB / 0 GB</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="diskBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="health-metric">
+                        <div class="metric-header">
+                            <span class="metric-name">Network</span>
+                            <span class="metric-value" id="netUsage">0 KB/s</span>
+                        </div>
+                    </div>
+
+                    <div class="health-metric">
+                        <div class="metric-header">
+                            <span class="metric-name">Python Processes</span>
+                            <span class="metric-value" id="pythonProcs">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Performance Chart (placeholder) -->
             <div class="panel">
                 <div class="panel-header">
@@ -1384,6 +1461,43 @@
 
 
 
+        function renderMachineHealth() {
+            const data = dashboardData || mockData;
+            const machine = data.machine || {};
+            
+            // CPU
+            const cpuPercent = machine.cpuPercent || 0;
+            document.getElementById('cpuUsage').textContent = `${cpuPercent.toFixed(1)}%`;
+            document.getElementById('cpuBar').style.width = `${cpuPercent}%`;
+            
+            // Memory
+            const memUsed = machine.memUsedGB || 0;
+            const memTotal = machine.memTotalGB || 0;
+            const memPercent = machine.memPercent || 0;
+            document.getElementById('memUsage').textContent = `${memUsed.toFixed(1)} GB / ${memTotal.toFixed(1)} GB`;
+            document.getElementById('memBar').style.width = `${memPercent}%`;
+            
+            // Disk
+            const diskUsed = machine.diskUsedGB || 0;
+            const diskTotal = machine.diskTotalGB || 0;
+            const diskPercent = machine.diskPercent || 0;
+            document.getElementById('diskUsage').textContent = `${diskUsed.toFixed(0)} GB / ${diskTotal.toFixed(0)} GB`;
+            document.getElementById('diskBar').style.width = `${diskPercent}%`;
+            
+            // Network
+            const netSpeed = machine.netSpeed || 0;
+            let netDisplay = netSpeed < 1024 ? `${netSpeed.toFixed(0)} KB/s` : `${(netSpeed/1024).toFixed(1)} MB/s`;
+            document.getElementById('netUsage').textContent = netDisplay;
+            
+            // Python processes
+            const pythonProcs = machine.pythonProcesses || 0;
+            document.getElementById('pythonProcs').textContent = pythonProcs;
+            
+            // Overall status
+            const status = (cpuPercent > 80 || memPercent > 90 || diskPercent > 90) ? 'Warning' : 'Good';
+            document.getElementById('machineStatus').textContent = status;
+        }
+
         function renderApiUsage() {
             const data = dashboardData || mockData;
             const stats = data.stats || {};
@@ -1576,6 +1690,7 @@
             renderPositions();
             renderStats();
             renderApiUsage();
+            renderMachineHealth();
             renderSessions();
         }
 
