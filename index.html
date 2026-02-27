@@ -1341,7 +1341,7 @@
                         Last active: ${session.lastActive}
                     </div>
                     <div class="session-tokens">
-                        ${session.tokens.toLocaleString()} tokens used
+                        ${(session.tokens || 0).toLocaleString()} tokens used
                     </div>
                 </div>
             `).join('');
