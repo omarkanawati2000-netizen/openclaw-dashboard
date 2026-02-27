@@ -150,6 +150,17 @@
             font-weight: 600;
         }
 
+
+        /* Full-width panels */
+        .panel-fullwidth {
+            grid-column: 1 / -1;
+        }
+
+        /* Taller panel-content for fullwidth panels */
+        .panel-fullwidth .panel-content {
+            max-height: 500px;
+        }
+
         /* Bot Status */
         .bot-item {
             background: var(--bg-dark);
@@ -854,7 +865,7 @@
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
             <!-- Bot Status -->
-            <div class="panel">
+            <div class="panel panel-fullwidth">
                 <div class="panel-header">
                     <div class="panel-title">🤖 Bot Status</div>
                     <div class="panel-badge" id="activeBots">9 Active</div>
