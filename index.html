@@ -196,6 +196,28 @@
         }
 
 
+
+        /* Bot sort dropdown */
+        .bot-sort {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+
+        .bot-sort select {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--orange-dim);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .bot-sort select:hover {
+            border-color: var(--orange);
+        }
+
         /* Session sort dropdown */
         .session-sort {
             display: inline-block;
@@ -1261,7 +1283,10 @@
         function renderBots() {
             const data = dashboardData || mockData;
             const botList = document.getElementById('botList');
-            botList.innerHTML = data.bots.map(bot => `
+            
+            // Sort bots based on current sort option
+            const sortedBots = sortBots(data.bots || [], currentBotSort);
+            botList.innerHTML = sortedBots.map(bot => `
                 <div class="bot-item ${bot.status}">
                     <div class="bot-info">
                         <div class="bot-name">${bot.name}</div>
@@ -1273,8 +1298,8 @@
                 </div>
             `).join('');
 
-            const runningCount = data.bots.filter(b => b.status === 'running').length;
-            const totalBots = data.bots.length;
+            const runningCount = sortedBots.filter(b => b.status === 'running').length;
+            const totalBots = sortedBots.length;
             document.getElementById('activeBots').textContent = `${runningCount} Running / ${totalBots} Total`;
         }
 
@@ -1410,6 +1435,74 @@
             }
         }
 
+
+
+        let currentBotSort = 'status';
+        
+        function sortAndRenderBots() {
+            currentBotSort = document.getElementById('botSortBy').value;
+            renderBots();
+        }
+        
+        function sortBots(bots, sortBy) {
+            const sorted = [...bots];
+            
+            if (sortBy === 'lastRun') {
+                // Sort by last run (most recent first)
+                // "X min ago" < "X hours ago" < "X days ago"
+                sorted.sort((a, b) => {
+                    return parseTimeAgo(a.lastRun) - parseTimeAgo(b.lastRun);
+                });
+            } else if (sortBy === 'nextRun') {
+                // Sort by next run (soonest first)
+                sorted.sort((a, b) => {
+                    return parseTimeNext(a.nextRun) - parseTimeNext(b.nextRun);
+                });
+            } else {
+                // Sort by status (running first, then idle, then error)
+                const statusOrder = { 'running': 0, 'ok': 1, 'idle': 2, 'error': 3 };
+                sorted.sort((a, b) => {
+                    return (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
+                });
+            }
+            
+            return sorted;
+        }
+        
+        function parseTimeAgo(timeStr) {
+            // Parse "X min ago", "X hours ago", "X days ago" into minutes
+            if (!timeStr || timeStr === 'Unknown') return 999999;
+            
+            const match = timeStr.match(/(\d+)\s*(min|hour|day|week)/i);
+            if (!match) return 999999;
+            
+            const value = parseInt(match[1]);
+            const unit = match[2].toLowerCase();
+            
+            if (unit.startsWith('min')) return value;
+            if (unit.startsWith('hour')) return value * 60;
+            if (unit.startsWith('day')) return value * 1440;
+            if (unit.startsWith('week')) return value * 10080;
+            
+            return 999999;
+        }
+        
+        function parseTimeNext(timeStr) {
+            // Parse "Xm", "Xh", "Xd" into minutes
+            if (!timeStr || timeStr === 'Unknown') return 999999;
+            
+            const match = timeStr.match(/(\d+)(m|h|d)/);
+            if (!match) return 999999;
+            
+            const value = parseInt(match[1]);
+            const unit = match[2];
+            
+            if (unit === 'm') return value;
+            if (unit === 'h') return value * 60;
+            if (unit === 'd') return value * 1440;
+            
+            return 999999;
+        }
 
         let currentSessionSort = 'lastActive';
         
