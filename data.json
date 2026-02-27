@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-02-27T05:56:58.430784",
+  "timestamp": "2026-02-27T05:57:39.800542",
   "bots": [
     {
       "name": "Token Usage Tracker",
       "status": "ok",
       "interval": "Daily",
       "lastRun": "6h ago",
-      "nextRun": "3m",
+      "nextRun": "2m",
       "errors": 0,
       "id": "dee59405-71ee-4f06-8b76-a76e47906f9a"
     },
@@ -14,8 +14,8 @@
       "name": "Content Bot Health Mo...",
       "status": "ok",
       "interval": "Hourly",
-      "lastRun": "56m ago",
-      "nextRun": "4m",
+      "lastRun": "57m ago",
+      "nextRun": "3m",
       "errors": 0,
       "id": "3ebfd390-570f-44bd-8b07-f252a703817d"
     },
@@ -42,7 +42,7 @@
       "status": "ok",
       "interval": "Hourly",
       "lastRun": "2h ago",
-      "nextRun": "8m",
+      "nextRun": "7m",
       "errors": 0,
       "id": "e2226435-17fa-4eef-b857-defbfc9926a9"
     },
@@ -50,8 +50,8 @@
       "name": "Clip Engine - Viral M...",
       "status": "ok",
       "interval": "Unknown",
-      "lastRun": "12m ago",
-      "nextRun": "18m",
+      "lastRun": "13m ago",
+      "nextRun": "17m",
       "errors": 0,
       "id": "b22a83b6-c662-4648-b12e-36fd0bad214c"
     },
@@ -502,12 +502,21 @@
   ],
   "sessions": [
     {
+      "name": "Discord Channel 14768714...",
+      "channel": "discord",
+      "kind": "group",
+      "model": "claude-opus-4-6",
+      "tokens": 78597,
+      "lastActive": "Just now",
+      "sessionKey": "agent:main:discord:channel:1476871474592743507"
+    },
+    {
       "name": "Discord Channel 14768620...",
       "channel": "discord",
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 44724,
-      "lastActive": "Just now",
+      "lastActive": "1 min ago",
       "sessionKey": "agent:main:discord:channel:1476862005410271274"
     },
     {
@@ -516,7 +525,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 144962,
-      "lastActive": "2 min ago",
+      "lastActive": "3 min ago",
       "sessionKey": "agent:main:discord:channel:1476840009133985834"
     },
     {
@@ -534,7 +543,7 @@
       "kind": "direct",
       "model": "claude-sonnet-4-6",
       "tokens": null,
-      "lastActive": "4 min ago",
+      "lastActive": "5 min ago",
       "sessionKey": "agent:main:subagent:48052525-d7e5-4030-a336-e0dbe8ee0478"
     },
     {
@@ -561,7 +570,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 23644,
-      "lastActive": "11 min ago",
+      "lastActive": "12 min ago",
       "sessionKey": "agent:main:cron:b22a83b6-c662-4648-b12e-36fd0bad214c"
     },
     {
@@ -570,7 +579,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 23644,
-      "lastActive": "11 min ago",
+      "lastActive": "12 min ago",
       "sessionKey": "agent:main:cron:b22a83b6-c662-4648-b12e-36fd0bad214c:run:031549a4-4879-4f42-8093-76ca1ca5e435"
     },
     {
@@ -579,7 +588,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 25682,
-      "lastActive": "23 min ago",
+      "lastActive": "24 min ago",
       "sessionKey": "agent:main:cron:62c4370c-0b84-4afc-9b01-faac8904d2ff"
     },
     {
@@ -588,17 +597,8 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 25682,
-      "lastActive": "23 min ago",
+      "lastActive": "24 min ago",
       "sessionKey": "agent:main:cron:62c4370c-0b84-4afc-9b01-faac8904d2ff:run:f3994b03-03bf-4645-baa1-dbc1175bf3b8"
-    },
-    {
-      "name": "Discord Channel 14768714...",
-      "channel": "discord",
-      "kind": "group",
-      "model": "claude-opus-4-6",
-      "tokens": 78597,
-      "lastActive": "33 min ago",
-      "sessionKey": "agent:main:discord:channel:1476871474592743507"
     },
     {
       "name": "Discord Channel 14761137...",
@@ -606,7 +606,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 34234,
-      "lastActive": "55 min ago",
+      "lastActive": "56 min ago",
       "sessionKey": "agent:main:discord:channel:1476113799361724476"
     },
     {
@@ -615,7 +615,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 14194,
-      "lastActive": "55 min ago",
+      "lastActive": "56 min ago",
       "sessionKey": "agent:main:cron:2d0f65ed-855a-42ab-89ae-4949dcfa16ed"
     },
     {
@@ -624,7 +624,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 14194,
-      "lastActive": "55 min ago",
+      "lastActive": "56 min ago",
       "sessionKey": "agent:main:cron:2d0f65ed-855a-42ab-89ae-4949dcfa16ed:run:468e6077-def5-45fe-9237-0e36f19d8b61"
     },
     {
@@ -633,7 +633,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 62611,
-      "lastActive": "55 min ago",
+      "lastActive": "56 min ago",
       "sessionKey": "agent:main:discord:channel:1476065682083938345"
     },
     {
@@ -642,7 +642,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 70677,
-      "lastActive": "56 min ago",
+      "lastActive": "57 min ago",
       "sessionKey": "agent:main:cron:3ebfd390-570f-44bd-8b07-f252a703817d"
     },
     {
@@ -651,7 +651,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 70677,
-      "lastActive": "56 min ago",
+      "lastActive": "57 min ago",
       "sessionKey": "agent:main:cron:3ebfd390-570f-44bd-8b07-f252a703817d:run:4276e9f6-e4ec-4da9-985c-a49e20423b8f"
     },
     {
@@ -1263,7 +1263,7 @@
       "kind": "group",
       "model": "claude-sonnet-4-6",
       "tokens": null,
-      "lastActive": "57 min ago",
+      "lastActive": "58 min ago",
       "sessionKey": "agent:main:discord:channel:1377905113217110017"
     },
     {
@@ -1547,11 +1547,11 @@
     }
   ],
   "machine": {
-    "cpuPercent": 11.8,
-    "memUsedGB": 11.30718994140625,
+    "cpuPercent": 2.7,
+    "memUsedGB": 11.254741668701172,
     "memTotalGB": 15.692092895507812,
-    "memPercent": 72.1,
-    "diskUsedGB": 217.07281112670898,
+    "memPercent": 71.7,
+    "diskUsedGB": 217.07342147827148,
     "diskTotalGB": 933.2890586853027,
     "diskPercent": 23.3,
     "netSpeed": 0,
@@ -1562,10 +1562,10 @@
     "winRate": 0,
     "positionCount": 32,
     "totalRevenue": 850,
-    "arcClipsToday": 0,
+    "arcClipsToday": 36,
     "arcViews": 0,
     "arcSubs": 42,
-    "rageClipsToday": 0,
+    "rageClipsToday": 16,
     "rageViews": 0,
     "rageSubs": 38,
     "ytQuotaUsed": 0,
@@ -1579,7 +1579,7 @@
     "tradingRevenue": 850,
     "contentRevenue": 0,
     "monthlyTarget": 10000,
-    "workspaceSize": 10181.82,
+    "workspaceSize": 10181.99,
     "dataSize": 46.94
   }
 }

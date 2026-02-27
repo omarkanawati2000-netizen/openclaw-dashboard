@@ -325,44 +325,46 @@ def get_youtube_channel_stats(channel_id):
         return {'subs': 0, 'views7d': 0, 'clipsToday': 0}
 
 def get_content_engine_stats():
-    """Get content engine upload stats from Discord channels"""
+    """Get content engine upload stats from upload_queue.json files"""
     try:
-        # Check clip upload queues in Discord channels
-        # Arc Highlightz upload queue: #arc-upload-queue (1475944659791384654)
-        # FomoHighlights upload queue: #rage-upload-queue (1475999451880489152)
-        
-        # For now, read from local upload logs if they exist
-        arc_log = os.path.join(WORKSPACE, 'ventures', 'clip_engine', 'uploads.log')
-        rage_log = os.path.join(WORKSPACE, 'ventures', 'clip_engine_rage', 'uploads.log')
-        
         arc_clips = 0
         arc_views = 0
-        arc_subs = 42  # Arc Highlightz has grown to ~42 subs
+        arc_subs = 42  # Arc Highlightz
         
         rage_clips = 0
         rage_views = 0
-        rage_subs = 38  # FomoHighlights has grown to ~38 subs
+        rage_subs = 38  # FomoHighlights
         
-        # Count uploads from today (sample based on file timestamps)
-        today = datetime.now().date()
+        # Count uploads from today
+        today = datetime.now().strftime('%Y-%m-%d')
         
-        if os.path.exists(arc_log):
+        # Arc Highlightz upload queue
+        arc_queue_file = os.path.join(WORKSPACE, 'ventures', 'clip_engine', 'upload_queue.json')
+        if os.path.exists(arc_queue_file):
             try:
-                with open(arc_log, 'r', encoding='utf-8', errors='ignore') as f:
-                    for line in f:
-                        if today.isoformat() in line:
-                            arc_clips += 1
-            except:
-                pass
+                with open(arc_queue_file, 'r', encoding='utf-8') as f:
+                    arc_queue = json.load(f)
+                
+                # Count clips uploaded today
+                for clip in arc_queue:
+                    if clip.get('uploaded_at', '').startswith(today):
+                        arc_clips += 1
+            except Exception as e:
+                print(f"[WARN] Could not read Arc upload queue: {e}")
         
-        if os.path.exists(rage_log):
+        # FomoHighlights upload queue
+        rage_queue_file = os.path.join(WORKSPACE, 'ventures', 'clip_engine_rage', 'upload_queue.json')
+        if os.path.exists(rage_queue_file):
             try:
-                with open(rage_log, 'r', encoding='utf-8', errors='ignore') as f:
-                    for line in f:
-                        if today.isoformat() in line:
-                            rage_clips += 1
-            except:
-                pass
+                with open(rage_queue_file, 'r', encoding='utf-8') as f:
+                    rage_queue = json.load(f)
+                
+                # Count clips uploaded today
+                for clip in rage_queue:
+                    if clip.get('uploaded_at', '').startswith(today):
+                        rage_clips += 1
+            except Exception as e:
+                print(f"[WARN] Could not read Rage upload queue: {e}")
         
         return {
             'arc_clips_today': arc_clips,
