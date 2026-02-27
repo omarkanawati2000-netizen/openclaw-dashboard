@@ -156,6 +156,31 @@
             grid-column: 1 / -1;
         }
 
+
+        /* Sessions 3-column layout for fullwidth panel */
+        .panel-fullwidth .session-list-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        /* Make sessions more compact in grid */
+        .panel-fullwidth .session-item {
+            margin-bottom: 0;
+        }
+
+        /* Revenue tracker - remove excessive margins */
+        .revenue-stream:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Mobile: stack sessions */
+        @media (max-width: 768px) {
+            .panel-fullwidth .session-list-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Taller panel-content for fullwidth panels */
         .panel-fullwidth .panel-content {
             max-height: 500px;
@@ -1096,7 +1121,7 @@
             </div>
 
             <!-- Sessions Tracker -->
-            <div class="panel">
+            <div class="panel panel-fullwidth">
                 <div class="panel-header">
                     <div class="panel-title">💬 Active Sessions</div>
                     <div class="panel-badge" id="sessionCount">0 Sessions</div>
@@ -1340,7 +1365,7 @@
                 return;
             }
             
-            sessionList.innerHTML = data.sessions.map(session => `
+            const sessionHTML = data.sessions.map(session => `
                 <div class="session-item">
                     <div class="session-header">
                         <div class="session-name">${session.name}</div>
@@ -1357,6 +1382,7 @@
                     </div>
                 </div>
             `).join('');
+            sessionList.innerHTML = `<div class="session-list-grid">${sessionHTML}</div>`;
             
             document.getElementById('sessionCount').textContent = `${data.sessions.length} Active`;
         }
