@@ -174,6 +174,28 @@
             margin-bottom: 0;
         }
 
+
+        /* Session sort dropdown */
+        .session-sort {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+
+        .session-sort select {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--orange-dim);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .session-sort select:hover {
+            border-color: var(--orange);
+        }
+
         /* Mobile: stack sessions */
         @media (max-width: 768px) {
             .panel-fullwidth .session-list-grid {
@@ -1130,6 +1152,12 @@
                 <div class="panel-header">
                     <div class="panel-title">💬 Active Sessions</div>
                     <div class="panel-badge" id="sessionCount">0 Sessions</div>
+                    <div class="session-sort">
+                        <select id="sessionSortBy" onchange="sortAndRenderSessions()">
+                            <option value="lastActive">Sort: Recent</option>
+                            <option value="tokens">Sort: Tokens</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="panel-content"><div id="sessionList"></div></div>
             </div>
@@ -1361,16 +1389,41 @@
             }
         }
 
+
+        let currentSessionSort = 'lastActive';
+        
+        function sortAndRenderSessions() {
+            currentSessionSort = document.getElementById('sessionSortBy').value;
+            renderSessions();
+        }
+        
+        function sortSessions(sessions, sortBy) {
+            const sorted = [...sessions];
+            
+            if (sortBy === 'tokens') {
+                // Sort by tokens (descending)
+                sorted.sort((a, b) => (b.tokens || 0) - (a.tokens || 0));
+            } else {
+                // Sort by last active (already sorted from API, but ensure it)
+                // Keep original order (assumes newest first from API)
+            }
+            
+            return sorted;
+        }
+
         function renderSessions() {
             const data = dashboardData || mockData;
             const sessionList = document.getElementById('sessionList');
             
-            if (!data.sessions || data.sessions.length === 0) {
+            // Sort sessions based on current sort option
+            const sortedSessions = sortSessions(data.sessions || [], currentSessionSort);
+            
+            if (!sortedSessions || sortedSessions.length === 0) {
                 sessionList.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 2rem;">No active sessions</div>';
                 return;
             }
             
-            const sessionHTML = data.sessions.map(session => `
+            const sessionHTML = sortedSessions.map(session => `
                 <div class="session-item">
                     <div class="session-header">
                         <div class="session-name">${session.name}</div>
@@ -1389,7 +1442,7 @@
             `).join('');
             sessionList.innerHTML = `<div class="session-list-grid">${sessionHTML}</div>`;
             
-            document.getElementById('sessionCount').textContent = `${data.sessions.length} Active`;
+            document.getElementById('sessionCount').textContent = `${sortedSessions.length} Active`;
         }
 
         function refreshDashboard() {
