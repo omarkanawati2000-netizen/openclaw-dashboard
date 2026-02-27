@@ -602,31 +602,31 @@
         }
 
 
-        /* Compact, scrollable panels */
+        /* Compact, scrollable panels - FORCE SCROLLBARS */
         .panel-content {
             max-height: 300px;
-            overflow-y: auto;
+            overflow-y: scroll !important;
             overflow-x: hidden;
             padding-right: 0.5rem;
-            margin-right: -0.5rem;
         }
 
-        /* Custom scrollbar */
+        /* Custom scrollbar - ALWAYS VISIBLE */
         .panel-content::-webkit-scrollbar {
-            width: 6px;
+            width: 10px;
         }
 
         .panel-content::-webkit-scrollbar-track {
-            background: transparent;
+            background: #222;
+            border-radius: 5px;
         }
 
         .panel-content::-webkit-scrollbar-thumb {
-            background: var(--orange-dim);
-            border-radius: 3px;
+            background: var(--orange);
+            border-radius: 5px;
         }
 
         .panel-content::-webkit-scrollbar-thumb:hover {
-            background: var(--orange);
+            background: #ffaa00;
         }
 
         /* Better spacing for items in scrollable panels */
