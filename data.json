@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-26T23:09:57.876552",
+  "timestamp": "2026-02-26T23:12:35.646670",
   "bots": [
     {
       "name": "Clip Engine - Rage Clipz",
@@ -14,7 +14,7 @@
       "name": "Clip Engine - Stream ...",
       "status": "ok",
       "interval": "Every 30 min",
-      "lastRun": "37m ago",
+      "lastRun": "40m ago",
       "nextRun": "Unknown",
       "errors": 0,
       "id": "62c4370c-0b84-4afc-9b01-faac8904d2ff"
@@ -24,7 +24,7 @@
       "status": "ok",
       "interval": "Daily",
       "lastRun": "5h ago",
-      "nextRun": "50m",
+      "nextRun": "47m",
       "errors": 0,
       "id": "dee59405-71ee-4f06-8b76-a76e47906f9a"
     },
@@ -32,8 +32,8 @@
       "name": "Content Bot Health Mo...",
       "status": "ok",
       "interval": "Hourly",
-      "lastRun": "9m ago",
-      "nextRun": "51m",
+      "lastRun": "12m ago",
+      "nextRun": "48m",
       "errors": 0,
       "id": "3ebfd390-570f-44bd-8b07-f252a703817d"
     },
@@ -41,8 +41,8 @@
       "name": "Z-Score Trend Bot",
       "status": "ok",
       "interval": "Hourly",
-      "lastRun": "9m ago",
-      "nextRun": "51m",
+      "lastRun": "11m ago",
+      "nextRun": "49m",
       "errors": 0,
       "id": "2d0f65ed-855a-42ab-89ae-4949dcfa16ed"
     },
@@ -50,8 +50,8 @@
       "name": "Autonomous System Imp...",
       "status": "ok",
       "interval": "Hourly",
-      "lastRun": "37m ago",
-      "nextRun": "55m",
+      "lastRun": "40m ago",
+      "nextRun": "52m",
       "errors": 0,
       "id": "e2226435-17fa-4eef-b857-defbfc9926a9"
     },
@@ -524,7 +524,7 @@
       "channel": "discord",
       "kind": "group",
       "model": "claude-sonnet-4-5",
-      "tokens": 155317,
+      "tokens": 163705,
       "lastActive": "Just now",
       "sessionKey": "agent:main:discord:channel:1468193294906425430"
     },
@@ -533,8 +533,8 @@
       "channel": "discord",
       "kind": "group",
       "model": "claude-sonnet-4-5",
-      "tokens": 164494,
-      "lastActive": "1 min ago",
+      "tokens": 163124,
+      "lastActive": "Just now",
       "sessionKey": "agent:main:discord:channel:1476441094026825778"
     },
     {
@@ -543,7 +543,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 77415,
-      "lastActive": "6 min ago",
+      "lastActive": "9 min ago",
       "sessionKey": "agent:main:cron:99386be2-3e6b-450a-bdef-cb14fa685b4a"
     },
     {
@@ -552,7 +552,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 77415,
-      "lastActive": "6 min ago",
+      "lastActive": "9 min ago",
       "sessionKey": "agent:main:cron:99386be2-3e6b-450a-bdef-cb14fa685b4a:run:f57e6188-0b8c-4f98-b1b3-2590f7ab725a"
     },
     {
@@ -561,7 +561,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 29181,
-      "lastActive": "8 min ago",
+      "lastActive": "11 min ago",
       "sessionKey": "agent:main:cron:2d0f65ed-855a-42ab-89ae-4949dcfa16ed"
     },
     {
@@ -570,7 +570,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 29181,
-      "lastActive": "8 min ago",
+      "lastActive": "11 min ago",
       "sessionKey": "agent:main:cron:2d0f65ed-855a-42ab-89ae-4949dcfa16ed:run:eb354337-d7e3-42fc-93cf-3102d499461f"
     },
     {
@@ -579,7 +579,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 48616,
-      "lastActive": "8 min ago",
+      "lastActive": "11 min ago",
       "sessionKey": "agent:main:discord:channel:1476065682083938345"
     },
     {
@@ -588,7 +588,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 132657,
-      "lastActive": "9 min ago",
+      "lastActive": "11 min ago",
       "sessionKey": "agent:main:cron:3ebfd390-570f-44bd-8b07-f252a703817d"
     },
     {
@@ -597,7 +597,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 132657,
-      "lastActive": "9 min ago",
+      "lastActive": "11 min ago",
       "sessionKey": "agent:main:cron:3ebfd390-570f-44bd-8b07-f252a703817d:run:cb764548-6ecc-4aec-aec1-3b2725761165"
     },
     {
@@ -606,7 +606,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 97379,
-      "lastActive": "13 min ago",
+      "lastActive": "15 min ago",
       "sessionKey": "agent:main:discord:channel:1475944662643638343"
     },
     {
@@ -615,7 +615,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 117828,
-      "lastActive": "23 min ago",
+      "lastActive": "26 min ago",
       "sessionKey": "agent:main:telegram:group:-1003146730450"
     },
     {
@@ -624,7 +624,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 122116,
-      "lastActive": "37 min ago",
+      "lastActive": "39 min ago",
       "sessionKey": "agent:main:cron:62c4370c-0b84-4afc-9b01-faac8904d2ff"
     },
     {
@@ -633,7 +633,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 122116,
-      "lastActive": "37 min ago",
+      "lastActive": "39 min ago",
       "sessionKey": "agent:main:cron:62c4370c-0b84-4afc-9b01-faac8904d2ff:run:ae773e54-c20f-413d-a48f-c1ec81955f35"
     },
     {
@@ -642,7 +642,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 35975,
-      "lastActive": "37 min ago",
+      "lastActive": "39 min ago",
       "sessionKey": "agent:main:discord:channel:1475223354066600036"
     },
     {
@@ -651,7 +651,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 70010,
-      "lastActive": "37 min ago",
+      "lastActive": "40 min ago",
       "sessionKey": "agent:main:cron:e2226435-17fa-4eef-b857-defbfc9926a9"
     },
     {
@@ -660,7 +660,7 @@
       "kind": "direct",
       "model": "claude-haiku-4-5",
       "tokens": 70010,
-      "lastActive": "37 min ago",
+      "lastActive": "40 min ago",
       "sessionKey": "agent:main:cron:e2226435-17fa-4eef-b857-defbfc9926a9:run:4c8b571f-5718-47aa-ae24-8e2e45d09b31"
     },
     {
@@ -669,7 +669,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 48061,
-      "lastActive": "37 min ago",
+      "lastActive": "40 min ago",
       "sessionKey": "agent:main:discord:channel:1475997768882458836"
     },
     {
@@ -678,7 +678,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 25454,
-      "lastActive": "58 min ago",
+      "lastActive": "1 hours ago",
       "sessionKey": "agent:main:discord:channel:1475223390376824952"
     },
     {
@@ -687,7 +687,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 21762,
-      "lastActive": "58 min ago",
+      "lastActive": "1 hours ago",
       "sessionKey": "agent:main:discord:channel:1475223373343887421"
     },
     {
@@ -1254,7 +1254,7 @@
       "kind": "group",
       "model": "claude-opus-4-6",
       "tokens": 100115,
-      "lastActive": "33 min ago",
+      "lastActive": "35 min ago",
       "sessionKey": "agent:main:discord:channel:1476451310286143581"
     },
     {
@@ -1353,7 +1353,7 @@
       "kind": "group",
       "model": "claude-sonnet-4-6",
       "tokens": null,
-      "lastActive": "22 hours ago",
+      "lastActive": "23 hours ago",
       "sessionKey": "agent:main:discord:channel:1476113798288113664"
     },
     {
@@ -1362,7 +1362,7 @@
       "kind": "group",
       "model": "claude-sonnet-4-6",
       "tokens": null,
-      "lastActive": "22 hours ago",
+      "lastActive": "23 hours ago",
       "sessionKey": "agent:main:discord:channel:1476113795192590459"
     },
     {
@@ -1489,14 +1489,14 @@
     "openaiUsage": 15,
     "hyperliquidRate": "Good",
     "twitchUsage": "Unknown",
-    "anthropicTokens": 4762707,
+    "anthropicTokens": 4769725,
     "anthropicPercent": 100,
     "openclawRevenue": 0,
     "openclawClients": 0,
     "tradingRevenue": 850,
     "contentRevenue": 0,
     "monthlyTarget": 10000,
-    "workspaceSize": 8180.33,
+    "workspaceSize": 10211.32,
     "dataSize": 6.48
   }
 }
