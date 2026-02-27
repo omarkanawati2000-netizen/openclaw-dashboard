@@ -932,7 +932,7 @@
             <button class="btn primary" onclick="refreshDashboard()">🔄 Refresh All Data</button>
             <button class="btn" onclick="window.open('https://omarkanawati2000-netizen.github.io/omars-terminal/', '_blank')">📈 Trading Terminal</button>
             <button class="btn" onclick="showLogsModal()">📋 View Logs</button>
-            <button class="btn danger" onclick="emergencyStop()">🛑 Emergency Stop</button>
+            
         </div>
 
         <!-- Dashboard Grid -->
@@ -1479,11 +1479,7 @@
             renderSessions();
         }
 
-        function emergencyStop() {
-            if (confirm('⚠️ This will stop ALL bots and cron jobs. Continue?')) {
-                alert('Emergency stop feature coming soon. For now, use: openclaw cron kill <id>');
-            }
-        }
+        
 
         // Auto-refresh every 10 seconds
         setInterval(refreshDashboard, 10000);
