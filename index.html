@@ -963,7 +963,14 @@
             <div class="panel panel-fullwidth">
                 <div class="panel-header">
                     <div class="panel-title">🤖 Bot Status</div>
-                    <div class="panel-badge" id="activeBots">9 Active</div>
+                    <div class="panel-badge" id="activeBots">0 Running / 0 Total</div>
+                    <div class="bot-sort">
+                        <select id="botSortBy" onchange="sortAndRenderBots()">
+                            <option value="status">Sort: Status</option>
+                            <option value="lastRun">Sort: Recent</option>
+                            <option value="nextRun">Sort: Next Run</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="panel-content"><div id="botList"></div></div>
             </div>
