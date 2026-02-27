@@ -335,6 +335,10 @@ def get_content_engine_stats():
         rage_views = 0
         rage_subs = 38  # FomoHighlights
         
+        viral_clips = 0
+        viral_views = 0
+        viral_subs = 0  # Viral Moments (new channel)
+        
         # Count uploads from today
         today = datetime.now().strftime('%Y-%m-%d')
         
@@ -366,6 +370,20 @@ def get_content_engine_stats():
             except Exception as e:
                 print(f"[WARN] Could not read Rage upload queue: {e}")
         
+        # Viral Moments upload queue
+        viral_queue_file = os.path.join(WORKSPACE, 'ventures', 'clip_engine_viral', 'upload_queue.json')
+        if os.path.exists(viral_queue_file):
+            try:
+                with open(viral_queue_file, 'r', encoding='utf-8') as f:
+                    viral_queue = json.load(f)
+                
+                # Count clips uploaded today
+                for clip in viral_queue:
+                    if clip.get('uploaded_at', '').startswith(today):
+                        viral_clips += 1
+            except Exception as e:
+                print(f"[WARN] Could not read Viral upload queue: {e}")
+        
         return {
             'arc_clips_today': arc_clips,
             'arc_views': arc_views,
@@ -373,6 +391,9 @@ def get_content_engine_stats():
             'rage_clips_today': rage_clips,
             'rage_views': rage_views,
             'rage_subs': rage_subs,
+            'viral_clips_today': viral_clips,
+            'viral_views': viral_views,
+            'viral_subs': viral_subs,
         }
     except Exception as e:
         print(f"[WARN] Could not get content engine stats: {e}")
@@ -489,6 +510,9 @@ def main():
             'rageClipsToday': content_stats.get('rage_clips_today', 0),
             'rageViews': content_stats.get('rage_views', 0),
             'rageSubs': content_stats.get('rage_subs', 38),
+            'viralClipsToday': content_stats.get('viral_clips_today', 0),
+            'viralViews': content_stats.get('viral_views', 0),
+            'viralSubs': content_stats.get('viral_subs', 0),
             'ytQuotaUsed': api_usage.get('ytQuotaUsed', 0),
             'openaiUsage': api_usage.get('openaiUsage', 15),
             'hyperliquidRate': api_usage.get('hyperliquidRate', 'Good'),

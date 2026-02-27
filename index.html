@@ -930,7 +930,7 @@
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title">🎬 Content Engine</div>
-                    <div class="panel-badge">2 Channels</div>
+                    <div class="panel-badge">3 Channels</div>
                 </div>
 
                 <div class="panel-content"><div class="channel-stats">
@@ -964,6 +964,24 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-number" id="rageSubs">0</div>
+                            <div class="stat-text">Subscribers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="channel-stats">
+                    <div class="channel-name">Viral Moments</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="viralClipsToday">0</div>
+                            <div class="stat-text">Clips Today</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="viralViews">0</div>
+                            <div class="stat-text">Views (7d)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="viralSubs">0</div>
                             <div class="stat-text">Subscribers</div>
                         </div>
                     </div>
@@ -1263,6 +1281,9 @@
                 rageClipsToday: 2,
                 rageViews: 1923,
                 rageSubs: 38,
+                viralClipsToday: 0,
+                viralViews: 0,
+                viralSubs: 0,
                 ytQuotaUsed: 3420,
                 openclawRevenue: 0,
                 openclawClients: 0,
@@ -1346,6 +1367,10 @@
             document.getElementById('rageClipsToday').textContent = stats.rageClipsToday;
             document.getElementById('rageViews').textContent = stats.rageViews.toLocaleString();
             document.getElementById('rageSubs').textContent = stats.rageSubs;
+
+            document.getElementById('viralClipsToday').textContent = stats.viralClipsToday;
+            document.getElementById('viralViews').textContent = stats.viralViews.toLocaleString();
+            document.getElementById('viralSubs').textContent = stats.viralSubs;
 
             document.getElementById('ytQuotaUsed').textContent = stats.ytQuotaUsed.toLocaleString();
             const quotaPercent = (stats.ytQuotaUsed / 10000) * 100;
