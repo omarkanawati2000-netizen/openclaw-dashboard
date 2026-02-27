@@ -1042,24 +1042,7 @@
     </div>
 
     <script>
-        // Data source (tries real data.json first, falls back to mock)
-        let dashboardData = null;
-        
-        async function loadRealData() {
-            try {
-                const response = await fetch("data.json");
-                if (response.ok) {
-                    dashboardData = await response.json();
-                    console.log("[OK] Loaded real data from data.json");
-                    return true;
-                }
-            } catch (e) {
-                console.warn("[WARN] Could not load data.json, using mock data");
-            }
-            return false;
-        }
-        
-        // Fetch real data from data.json
+// Fetch real data from data.json
         let dashboardData = null;
         
         async function loadData() {
@@ -1321,6 +1304,8 @@
             renderBots();
             renderPositions();
             renderStats();
+            renderApiUsage();
+            renderSessions();
         }
 
         function emergencyStop() {
