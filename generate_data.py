@@ -210,14 +210,42 @@ def get_active_sessions():
             sessions = []
             
             for session in sessions_data.get('sessions', []):
+                # Get display name or parse from key
+                name = session.get('displayName', None)
+                session_key = session.get('key', '')
+                channel = session.get('channel', 'unknown')
+                
+                # If no display name, parse from session key
+                if not name or name == 'Unknown':
+                    if ':discord:' in session_key:
+                        if ':channel:' in session_key:
+                            channel_id = session_key.split(':channel:')[-1]
+                            name = f'Discord Channel {channel_id[:8]}...'
+                            channel = 'discord'
+                        elif ':dm:' in session_key:
+                            name = 'Discord DM'
+                            channel = 'discord'
+                    elif ':telegram:' in session_key:
+                        if session_key.endswith('-1003146730450'):
+                            name = 'Telegram Retards v2'
+                        else:
+                            group_id = session_key.split(':')[-1]
+                            name = f'Telegram {group_id[:8]}...'
+                        channel = 'telegram'
+                    elif ':subagent:' in session_key:
+                        name = 'Subagent Session'
+                        channel = 'subagent'
+                    else:
+                        name = f'Session {session_key.split(":")[-1][:8]}...'
+                
                 sessions.append({
-                    'name': session.get('displayName', 'Unknown'),
-                    'channel': session.get('channel', 'unknown'),
+                    'name': name,
+                    'channel': channel,
                     'kind': session.get('kind', 'unknown'),
                     'model': session.get('model', 'unknown'),
                     'tokens': session.get('totalTokens', 0),
                     'lastActive': format_timestamp(session.get('updatedAt', 0)),
-                    'sessionKey': session.get('key', '')
+                    'sessionKey': session_key
                 })
             
             return sessions
