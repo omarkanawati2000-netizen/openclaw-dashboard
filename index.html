@@ -1225,33 +1225,53 @@
             const ytPercent = (ytUsed / 10000) * 100;
             document.getElementById('ytApiUsage').textContent = `${ytUsed.toLocaleString()} / 10,000`;
             document.getElementById('ytApiBar').style.width = `${ytPercent}%`;
-            document.getElementById('ytApiMeta').textContent = `${(10000 - ytUsed).toLocaleString()} units remaining`;
+            const ytRemaining = 10000 - ytUsed;
+            document.getElementById('ytApiMeta').textContent = `${ytRemaining.toLocaleString()} units remaining`;
             
             // OpenAI API
-            const openaiUsed = stats.openaiUsage || 15;
+            const openaiUsed = stats.openaiUsage || 0;
             document.getElementById('openaiApiUsage').textContent = `${openaiUsed}%`;
             document.getElementById('openaiApiBar').style.width = `${openaiUsed}%`;
-            document.getElementById('openaiApiMeta').textContent = `${100 - openaiUsed}% remaining`;
+            document.getElementById('openaiApiMeta').textContent = openaiUsed > 0 ? `${100 - openaiUsed}% remaining` : 'Unknown usage';
             
             // Hyperliquid
-            const hlStatus = stats.hyperliquidRate || 'Good';
+            const hlStatus = stats.hyperliquidRate || 'Unknown';
             document.getElementById('hlApiUsage').textContent = hlStatus;
-            const hlPercent = hlStatus === 'Good' ? 25 : hlStatus === 'Warning' ? 75 : 100;
+            const hlPercent = hlStatus === 'Good' ? 25 : hlStatus === 'Warning' ? 75 : hlStatus === 'Throttled' ? 100 : 0;
             document.getElementById('hlApiBar').style.width = `${hlPercent}%`;
-            document.getElementById('hlApiMeta').textContent = `No rate limit issues`;
+            document.getElementById('hlApiMeta').textContent = hlStatus === 'Good' ? 'No rate limit issues' : 'Rate limit status';
             
             // Twitch API
-            document.getElementById('twitchApiUsage').textContent = 'Unknown';
+            const twitchStatus = stats.twitchUsage || 'Unknown';
+            document.getElementById('twitchApiUsage').textContent = twitchStatus;
             document.getElementById('twitchApiBar').style.width = '0%';
             document.getElementById('twitchApiMeta').textContent = 'Tracking not enabled';
             
             // Anthropic (total tokens from sessions)
-            const sessions = data.sessions || [];
-            const totalTokens = sessions.reduce((sum, s) => sum + (s.tokens || 0), 0);
-            document.getElementById('anthropicApiUsage').textContent = `${totalTokens.toLocaleString()} tokens`;
-            const tokenPercent = Math.min((totalTokens / 200000) * 100, 100);
-            document.getElementById('anthropicApiBar').style.width = `${tokenPercent}%`;
-            document.getElementById('anthropicApiMeta').textContent = `Across ${sessions.length} sessions`;
+            const anthropicTokens = stats.anthropicTokens || 0;
+            const anthropicPercent = stats.anthropicPercent || 0;
+            
+            if (anthropicTokens > 0) {
+                // Format large numbers: 4,300,535 → "4.3M"
+                let tokenDisplay;
+                if (anthropicTokens >= 1000000) {
+                    tokenDisplay = (anthropicTokens / 1000000).toFixed(1) + 'M';
+                } else if (anthropicTokens >= 1000) {
+                    tokenDisplay = (anthropicTokens / 1000).toFixed(1) + 'K';
+                } else {
+                    tokenDisplay = anthropicTokens.toLocaleString();
+                }
+                
+                document.getElementById('anthropicApiUsage').textContent = `${tokenDisplay} tokens`;
+                document.getElementById('anthropicApiBar').style.width = `${Math.min(anthropicPercent, 100)}%`;
+                
+                const sessions = data.sessions || [];
+                document.getElementById('anthropicApiMeta').textContent = `Across ${sessions.length} sessions`;
+            } else {
+                document.getElementById('anthropicApiUsage').textContent = '0 tokens';
+                document.getElementById('anthropicApiBar').style.width = '0%';
+                document.getElementById('anthropicApiMeta').textContent = 'No sessions active';
+            }
         }
 
         function renderSessions() {
