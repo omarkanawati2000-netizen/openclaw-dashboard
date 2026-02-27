@@ -607,29 +607,50 @@
             max-height: 300px;
             overflow-y: auto;
             overflow-x: hidden;
+            padding-right: 0.5rem;
+            margin-right: -0.5rem;
         }
 
         /* Custom scrollbar */
         .panel-content::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         .panel-content::-webkit-scrollbar-track {
-            background: var(--bg-dark);
+            background: transparent;
         }
 
         .panel-content::-webkit-scrollbar-thumb {
             background: var(--orange-dim);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         .panel-content::-webkit-scrollbar-thumb:hover {
             background: var(--orange);
         }
 
-        /* Make panels more compact */
+        /* Better spacing for items in scrollable panels */
+        .panel-content .bot-item,
+        .panel-content .position-item,
+        .panel-content .session-item,
+        .panel-content .api-item,
+        .panel-content .health-item,
+        .panel-content .revenue-stream {
+            margin-right: 0.5rem;
+        }
+
+        .panel-content .stat-box {
+            margin-right: 0.5rem;
+        }
+
+        /* Make panels more compact - remove max-height on panel itself */
         .panel {
-            max-height: 500px;
+            overflow: visible;
+        }
+
+        /* Ensure panel children don't overflow */
+        .panel > * {
+            overflow: visible;
         }
 
         /* Enhanced Mobile Responsive */
