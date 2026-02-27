@@ -1205,7 +1205,9 @@
         async function loadData() {
             console.log('[DEBUG] Attempting to load data.json...');
             try {
-                const response = await fetch('data.json');
+                // Cache-bust with timestamp to force fresh data
+                const timestamp = new Date().getTime();
+                const response = await fetch(`data.json?t=${timestamp}`);
                 console.log('[DEBUG] Fetch response:', response.status, response.statusText);
                 
                 if (response.ok) {
@@ -1542,7 +1544,9 @@
             document.getElementById('sessionCount').textContent = `${sortedSessions.length} Active`;
         }
 
-        function refreshDashboard() {
+        async function refreshDashboard() {
+            // Force reload data from server (cache-bust with timestamp)
+            await loadData();
             const now = new Date();
             document.getElementById('lastUpdate').innerHTML = `Last update: ${now.toLocaleTimeString()}`;
             renderBots();
