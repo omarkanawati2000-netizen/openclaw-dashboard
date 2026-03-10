@@ -423,7 +423,103 @@
         .stat-positive { color: var(--success); }
         .stat-negative { color: var(--error); }
 
-        /* === CONTENT ENGINE === */
+        /* === CLIP EMPIRE === */
+        .ce-channel-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        .ce-channel-card.paused { opacity: 0.45; }
+        .ce-channel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+        }
+        .ce-channel-name {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--gold);
+        }
+        .ce-status-pill {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: rgba(0,200,100,0.15);
+            color: #00c864;
+            border: 1px solid rgba(0,200,100,0.25);
+        }
+        .ce-status-pill.paused {
+            background: rgba(120,120,120,0.15);
+            color: #888;
+            border-color: rgba(120,120,120,0.2);
+        }
+        .ce-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.35rem;
+        }
+        .ce-progress-track {
+            flex: 1;
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .ce-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00c864, #00e080);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+        .ce-progress-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+            min-width: 42px;
+            text-align: right;
+        }
+        .ce-creators {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 0.3rem;
+        }
+        .ce-creator-tag {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 1px 7px;
+        }
+        .ce-last-title {
+            font-size: 0.62rem;
+            color: var(--text-dim);
+            font-style: italic;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        .ce-niche-label {
+            font-size: 0.58rem;
+            color: #7b8fa0;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-left: 6px;
+        }
+
+        /* === CONTENT ENGINE (legacy) === */
         .channel-stats {
             background: var(--bg-elevated);
             padding: 1rem;
@@ -926,74 +1022,39 @@
                 <div class="panel-content"><div id="positionList"></div></div>
             </div>
 
-            <!-- Content Engine -->
-            <div class="panel">
+            <!-- Clip Empire -->
+            <div class="panel" id="clipEmpirePanel">
                 <div class="panel-header">
-                    <div class="panel-title">🎬 Content Engine</div>
-                    <div class="panel-badge">3 Channels</div>
+                    <div class="panel-title">🎬 Clip Empire</div>
+                    <div class="panel-badge" id="ceActiveBadge">0 Active</div>
                 </div>
-
-                <div class="panel-content"><div class="channel-stats">
-                    <div class="channel-name">Arc Highlightz</div>
-                    <div class="stats-grid">
+                <div class="panel-content">
+                    <!-- Summary row -->
+                    <div class="stats-grid" style="margin-bottom:12px">
                         <div class="stat-item">
-                            <div class="stat-number" id="arcClipsToday">0</div>
-                            <div class="stat-text">Clips Today</div>
+                            <div class="stat-number" id="ceTotalToday">0</div>
+                            <div class="stat-text">Uploaded Today</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="arcViews">0</div>
-                            <div class="stat-text">Views (7d)</div>
+                            <div class="stat-number" id="ceTotalQueued">0</div>
+                            <div class="stat-text">In Queue</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="arcSubs">0</div>
-                            <div class="stat-text">Subscribers</div>
+                            <div class="stat-number" id="ceDailyTarget">0</div>
+                            <div class="stat-text">Daily Target</div>
                         </div>
                     </div>
-                </div>
-
-                <div class="channel-stats">
-                    <div class="channel-name">FomoHighlights</div>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-number" id="rageClipsToday">0</div>
-                            <div class="stat-text">Clips Today</div>
+                    <!-- Channel cards — rendered by JS -->
+                    <div id="ceChannelList"></div>
+                    <!-- YT API Quota -->
+                    <div class="stat-box" style="margin-top:10px">
+                        <div class="stat-label">YouTube API Quota</div>
+                        <div class="stat-value">
+                            <span id="ytQuotaUsed">0</span> / 10,000
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="rageViews">0</div>
-                            <div class="stat-text">Views (7d)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="ytQuotaBar" style="width: 0%"></div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="rageSubs">0</div>
-                            <div class="stat-text">Subscribers</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="channel-stats">
-                    <div class="channel-name">Viral Moments</div>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-number" id="viralClipsToday">0</div>
-                            <div class="stat-text">Clips Today</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="viralViews">0</div>
-                            <div class="stat-text">Views (7d)</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="viralSubs">0</div>
-                            <div class="stat-text">Subscribers</div>
-                        </div>
-                    </div>
-                </div>
-
-                </div><div class="stat-box">
-                    <div class="stat-label">YouTube API Quota</div>
-                    <div class="stat-value">
-                        <span id="ytQuotaUsed">0</span> / 10,000
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="ytQuotaBar" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
@@ -1360,17 +1421,42 @@
             document.getElementById('winRate').textContent = `${stats.winRate}%`;
             document.getElementById('positionCount').textContent = `${stats.positionCount} Positions`;
 
-            document.getElementById('arcClipsToday').textContent = stats.arcClipsToday;
-            document.getElementById('arcViews').textContent = stats.arcViews.toLocaleString();
-            document.getElementById('arcSubs').textContent = stats.arcSubs;
+            // ── Clip Empire panel ──────────────────────────────────────────
+            const ce = data.clip_empire || {};
+            const ceChannels = ce.channels || [];
+            document.getElementById('ceActiveBadge').textContent = `${ce.active_count || 0} Active`;
+            document.getElementById('ceTotalToday').textContent = ce.total_today || 0;
+            document.getElementById('ceTotalQueued').textContent = ce.total_queued || 0;
+            document.getElementById('ceDailyTarget').textContent = ce.total_target || 0;
 
-            document.getElementById('rageClipsToday').textContent = stats.rageClipsToday;
-            document.getElementById('rageViews').textContent = stats.rageViews.toLocaleString();
-            document.getElementById('rageSubs').textContent = stats.rageSubs;
-
-            document.getElementById('viralClipsToday').textContent = stats.viralClipsToday;
-            document.getElementById('viralViews').textContent = stats.viralViews.toLocaleString();
-            document.getElementById('viralSubs').textContent = stats.viralSubs;
+            const ceList = document.getElementById('ceChannelList');
+            ceList.innerHTML = ceChannels.map(ch => {
+                const pct = ch.daily_target > 0 ? Math.min(100, Math.round(ch.today_count / ch.daily_target * 100)) : 0;
+                const isActive = ch.status === 'active';
+                const creatorsHtml = ch.creators.length
+                    ? ch.creators.map(c => `<span class="ce-creator-tag">${c}</span>`).join('')
+                    : '';
+                const lastTitleHtml = ch.last_title
+                    ? `<div class="ce-last-title" title="${ch.last_title}">"${ch.last_title}"</div>` : '';
+                return `<div class="ce-channel-card ${isActive ? '' : 'paused'}">
+                    <div class="ce-channel-header">
+                        <div>
+                            <span class="ce-channel-name">${ch.name.replace(/_/g,' ')}</span>
+                            <span class="ce-niche-label">${ch.niche}</span>
+                        </div>
+                        <span class="ce-status-pill ${isActive ? '' : 'paused'}">${isActive ? 'Active' : 'Paused'}</span>
+                    </div>
+                    <div class="ce-progress-row">
+                        <div class="ce-progress-track">
+                            <div class="ce-progress-fill" style="width:${pct}%"></div>
+                        </div>
+                        <div class="ce-progress-label">${ch.today_count}/${ch.daily_target}/day</div>
+                    </div>
+                    ${creatorsHtml ? `<div class="ce-creators">${creatorsHtml}</div>` : ''}
+                    ${lastTitleHtml}
+                </div>`;
+            }).join('');
+            // ───────────────────────────────────────────────────────────────
 
             document.getElementById('ytQuotaUsed').textContent = stats.ytQuotaUsed.toLocaleString();
             const quotaPercent = (stats.ytQuotaUsed / 10000) * 100;

@@ -324,86 +324,125 @@ def get_youtube_channel_stats(channel_id):
     except:
         return {'subs': 0, 'views7d': 0, 'clipsToday': 0}
 
-def get_content_engine_stats():
-    """Get content engine upload stats from upload_queue.json files"""
+def get_clip_empire_stats():
+    """Read Clip Empire channel stats + creator profiles from the DB and config."""
+    import sqlite3 as _sq
+    DB = os.path.join(WORKSPACE, 'ventures', 'clip_empire', 'data', 'clip_empire.db')
+    SOURCES_PATH = os.path.join(WORKSPACE, 'ventures', 'clip_empire', 'engine', 'config', 'sources.py')
+
+    # Channel niche labels
+    NICHE_MAP = {
+        'arc_highlightz': 'Gaming',
+        'fomo_highlights': 'Gaming',
+        'viral_recaps': 'Gaming',
+        'market_meltdowns': 'Finance',
+        'crypto_confessions': 'Finance',
+        'rich_or_ruined': 'Finance',
+        'startup_graveyard': 'Business',
+        'self_made_clips': 'Business',
+        'ai_did_what': 'Tech/AI',
+        'gym_moments': 'Fitness',
+        'kitchen_chaos': 'Food',
+        'cases_unsolved': 'True Crime',
+        'unfiltered_clips': 'Misc',
+    }
+
+    # Creator-to-channel mapping (key creators only)
+    CREATOR_MAP = {
+        'arc_highlightz': ['Tfue', 'Cloakzy'],
+        'fomo_highlights': ['Shroud', 'Nickmercs', 'TimTheTatman'],
+        'viral_recaps': ['Moistcr1tikal', 'HasanAbi', 'Ludwig'],
+        'market_meltdowns': ['PatrickBoyle', 'WSMillennial', 'Coffeezilla', 'RareLiquid'],
+    }
+
+    channels = []
+    today = datetime.now().strftime('%Y-%m-%d')
+
     try:
-        arc_clips = 0
-        arc_views = 0
-        arc_subs = 42  # Arc Highlightz
-        
-        rage_clips = 0
-        rage_views = 0
-        rage_subs = 38  # FomoHighlights
-        
-        viral_clips = 0
-        viral_views = 0
-        viral_subs = 0  # Viral Moments (new channel)
-        
-        # Count uploads from today
-        today = datetime.now().strftime('%Y-%m-%d')
-        
-        # Arc Highlightz upload queue
-        arc_queue_file = os.path.join(WORKSPACE, 'ventures', 'clip_engine', 'upload_queue.json')
-        if os.path.exists(arc_queue_file):
-            try:
-                with open(arc_queue_file, 'r', encoding='utf-8') as f:
-                    arc_queue = json.load(f)
-                
-                # Count clips uploaded today
-                for clip in arc_queue:
-                    if clip.get('uploaded_at', '').startswith(today):
-                        arc_clips += 1
-            except Exception as e:
-                print(f"[WARN] Could not read Arc upload queue: {e}")
-        
-        # FomoHighlights upload queue
-        rage_queue_file = os.path.join(WORKSPACE, 'ventures', 'clip_engine_rage', 'upload_queue.json')
-        if os.path.exists(rage_queue_file):
-            try:
-                with open(rage_queue_file, 'r', encoding='utf-8') as f:
-                    rage_queue = json.load(f)
-                
-                # Count clips uploaded today
-                for clip in rage_queue:
-                    if clip.get('uploaded_at', '').startswith(today):
-                        rage_clips += 1
-            except Exception as e:
-                print(f"[WARN] Could not read Rage upload queue: {e}")
-        
-        # Viral Moments upload queue
-        viral_queue_file = os.path.join(WORKSPACE, 'ventures', 'clip_engine_viral', 'upload_queue.json')
-        if os.path.exists(viral_queue_file):
-            try:
-                with open(viral_queue_file, 'r', encoding='utf-8') as f:
-                    viral_queue = json.load(f)
-                
-                # Count clips uploaded today
-                for clip in viral_queue:
-                    if clip.get('uploaded_at', '').startswith(today):
-                        viral_clips += 1
-            except Exception as e:
-                print(f"[WARN] Could not read Viral upload queue: {e}")
-        
-        return {
-            'arc_clips_today': arc_clips,
-            'arc_views': arc_views,
-            'arc_subs': arc_subs,
-            'rage_clips_today': rage_clips,
-            'rage_views': rage_views,
-            'rage_subs': rage_subs,
-            'viral_clips_today': viral_clips,
-            'viral_views': viral_views,
-            'viral_subs': viral_subs,
-        }
+        conn = _sq.connect(DB)
+        rows = conn.execute(
+            "SELECT channel_name, status, daily_target FROM channels ORDER BY status DESC, channel_name"
+        ).fetchall()
+
+        for ch_name, status, daily_target in rows:
+            niche = NICHE_MAP.get(ch_name, 'Unknown')
+            # Jobs today (succeeded + queued)
+            today_count = conn.execute(
+                """SELECT COUNT(*) FROM publish_jobs
+                   WHERE channel_name=? AND date(created_at)=?
+                   AND status IN ('succeeded','queued','running')""",
+                (ch_name, today)
+            ).fetchone()[0]
+
+            # Last succeeded job
+            last_row = conn.execute(
+                """SELECT caption_text, created_at FROM publish_jobs
+                   WHERE channel_name=? AND status='succeeded'
+                   ORDER BY created_at DESC LIMIT 1""",
+                (ch_name,)
+            ).fetchone()
+            last_title = last_row[0][:50] if last_row else None
+            last_ts = last_row[1][:16] if last_row else None
+
+            # Queued jobs
+            queued = conn.execute(
+                "SELECT COUNT(*) FROM publish_jobs WHERE channel_name=? AND status='queued'",
+                (ch_name,)
+            ).fetchone()[0]
+
+            channels.append({
+                'name': ch_name,
+                'niche': niche or NICHE_MAP.get(ch_name, 'Unknown'),
+                'status': status,
+                'daily_target': daily_target or 0,
+                'today_count': today_count,
+                'queued': queued,
+                'last_title': last_title,
+                'last_ts': last_ts,
+                'creators': CREATOR_MAP.get(ch_name, []),
+            })
+        conn.close()
+    except Exception as e:
+        print(f"[WARN] Clip Empire DB read failed: {e}")
+
+    active = [c for c in channels if c['status'] == 'active']
+    total_today = sum(c['today_count'] for c in channels)
+    total_queued = sum(c['queued'] for c in channels)
+    total_target = sum(c['daily_target'] for c in active)
+
+    return {
+        'channels': channels,
+        'active_count': len(active),
+        'total_count': len(channels),
+        'total_today': total_today,
+        'total_queued': total_queued,
+        'total_target': total_target,
+        # Legacy keys kept for backwards compat
+        'arc_clips_today': next((c['today_count'] for c in channels if c['name'] == 'arc_highlightz'), 0),
+        'rage_clips_today': next((c['today_count'] for c in channels if c['name'] == 'fomo_highlights'), 0),
+        'viral_clips_today': next((c['today_count'] for c in channels if c['name'] == 'viral_recaps'), 0),
+    }
+
+
+def get_content_engine_stats():
+    """Wrapper — now delegates to Clip Empire DB reader."""
+    try:
+        return get_clip_empire_stats()
     except Exception as e:
         print(f"[WARN] Could not get content engine stats: {e}")
         return {
+            'channels': [],
+            'active_count': 0,
+            'total_count': 0,
+            'total_today': 0,
+            'total_queued': 0,
+            'total_target': 0,
             'arc_clips_today': 0,
             'arc_views': 0,
-            'arc_subs': 42,
+            'arc_subs': 0,
             'rage_clips_today': 0,
             'rage_views': 0,
-            'rage_subs': 38,
+            'rage_subs': 0,
         }
 
 def get_api_usage(sessions):
@@ -502,6 +541,14 @@ def main():
         "positions": positions,
         "sessions": sessions,
         "machine": machine,
+        "clip_empire": {
+            "channels": content_stats.get('channels', []),
+            "active_count": content_stats.get('active_count', 0),
+            "total_count": content_stats.get('total_count', 0),
+            "total_today": content_stats.get('total_today', 0),
+            "total_queued": content_stats.get('total_queued', 0),
+            "total_target": content_stats.get('total_target', 0),
+        },
         "stats": {
             **stats,
             'arcClipsToday': content_stats.get('arc_clips_today', 0),
